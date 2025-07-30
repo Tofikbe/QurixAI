@@ -91,11 +91,8 @@ export default function HomePage() {
       </div>
 
       {/* Events Side Display */}
-      <div className="fixed bottom-0 left-0 w-full bg-black bg-opacity-60 py-2 text-center text-sm">
-        <marquee behavior="scroll" direction="left" scrollAmount={4}>
-          🚀 New Event: Earn double BP this weekend! 💥 | 💡 Tip: Tweet about Aptos daily for higher rank! | 🎯 Polygon campaign starts Aug 5th!
-        </marquee>
-      </div>
-    </main>
-  )
-}
+      <div className="fixed bottom-0 left-0 w-full bg-black bg-opacity-60 py-2 overflow-hidden">
+  <div className="whitespace-nowrap animate-marquee text-sm text-center">
+    🚀 New Event: Earn double BP this weekend! 💥 | 💡 Tip: Tweet about Aptos daily for higher rank! | 🎯 Polygon campaign starts Aug 5th!
+  </div>
+</div>
