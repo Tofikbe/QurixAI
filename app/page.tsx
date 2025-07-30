@@ -1,6 +1,14 @@
-import Header from './components/Header' import React from 'react' import Image from 'next/image'
+import Header from './components/Header' 
+import React from 'react' 
+import Image from 'next/image'
 
-export default function HomePage() { return ( <main className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-900 text-white"> {/* Top Banner */} <div className="w-full h-[100px] flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-md text-3xl font-bold"> QurixAI </div>
+export default function HomePage() { 
+  return ( 
+    <main className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-900 text-white"> 
+      {/* Top Banner */} 
+      <div className="w-full h-[100px] flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-md text-3xl font-bold"> 
+        QurixAI 
+      </div>
 
 {/* Tabs for Blockchain Selection */}
   <div className="flex justify-center mt-6 space-x-4 text-lg font-semibold">
