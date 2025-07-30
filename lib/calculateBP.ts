@@ -1,12 +1,10 @@
-export function calculateBP(tweetText: string): number {
-  const lower = tweetText.toLowerCase()
-  let points = 0
+export function calculateBP(tweet: any): number {
+  const { like_count, retweet_count, reply_count } = tweet.public_metrics
 
-  if (lower.includes('aptos')) points += 10
-  if (lower.includes('polygon')) points += 10
-  if (lower.includes('web3')) points += 5
-  if (lower.includes('airdrop')) points += 3
-  if (lower.includes('build')) points += 5
+  // You can change weights if needed
+  const likeBP = like_count * 1
+  const retweetBP = retweet_count * 2
+  const replyBP = reply_count * 1.5
 
-  return points
+  return likeBP + retweetBP + replyBP
 }
