@@ -1,3 +1,5 @@
+import '../styles/globals.css'
+
 export const metadata = {
   title: 'QurixAI',
   description: 'Track Web3 engagement on Aptos & Polygon',
@@ -10,7 +12,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0 }}>{children}</body>
+      <body className="bg-gradient-to-br from-green-900 via-black to-green-900 text-white">
+        {children}
+      </body>
     </html>
   )
 }
