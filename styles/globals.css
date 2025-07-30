@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === Custom Styling === */
+/* === Custom Animation for Marquee === */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
 
+.animate-marquee {
+  animation: scroll-left 15s linear infinite;
+}
+
+/* === General Styling === */
 body {
   @apply text-[#e5e5e5] m-0;
   background: linear-gradient(135deg, rgba(0,255,0,0.05), rgba(0,0,0,0.8));
