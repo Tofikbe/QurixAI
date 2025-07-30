@@ -1,40 +1,54 @@
-import { fetchTweetsFromX } from '../../lib/twitter'
 import { calculateBP } from '../../lib/calculateBP'
 
-const BEARER_TOKEN = 're_e2rZdAHG_9TE18SNPaiD8HfwccBNieBx4' // ✅ your actual Bearer Token
+const BEARER_TOKEN = 'Bearer AAAAAAAAAAAAAAAAAAAAAN6d...' // ← Apna actual X Bearer Token yahan lagao
 
+// Get Twitter User ID from username
 const getUserId = async (username: string) => {
-  const response = await fetch(`https://api.twitter.com/2/users/by/username/${username}`, {
+  const res = await fetch(`https://api.twitter.com/2/users/by/username/${username}`, {
     headers: {
-      Authorization: `Bearer ${BEARER_TOKEN}`,
+      Authorization: BEARER_TOKEN,
     },
   })
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch user ID')
+  if (!res.ok) {
+    throw new Error('❌ Failed to fetch user ID')
   }
 
-  const data = await response.json()
-  return data.data.id
+  const data = await res.json()
+  return data.data?.id
+}
+
+// Fetch recent tweets by user ID
+const fetchTweetsFromX = async (userId: string) => {
+  const res = await fetch(`https://api.twitter.com/2/users/${userId}/tweets?max_results=100`, {
+    headers: {
+      Authorization: BEARER_TOKEN,
+    },
+  })
+
+  if (!res.ok) {
+    throw new Error('❌ Failed to fetch tweets')
+  }
+
+  const data = await res.json()
+  return data.data || []
 }
 
 export default async function handler(req, res) {
   try {
-    const username = 'Tofikbe' // ✅ your Twitter username
+    const username = req.query.username || 'Crypto_King877' // ← Later frontend se dynamic bhejna
     const userId = await getUserId(username)
-
     const tweets = await fetchTweetsFromX(userId)
 
     let totalBP = 0
 
     for (const tweet of tweets) {
-      const bp = calculateBP(tweet)
-      totalBP += bp
+      totalBP += calculateBP(tweet)
     }
 
     res.status(200).json({ totalBP })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Something went wrong' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: err.message || 'Unknown error' })
   }
 }
