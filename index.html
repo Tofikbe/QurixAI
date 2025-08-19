@@ -181,6 +181,17 @@
             background: linear-gradient(90deg, #1a1a3e, #ff00ff);
             color: #ffffff;
         }
+        .last-updated {
+            font-size: 0.8rem;
+            color: #00d4ff;
+            text-align: center;
+            padding: 5px 0;
+            background: rgba(10, 10, 35, 0.7);
+        }
+        .light .last-updated {
+            color: #1a1a3e;
+            background: rgba(245, 245, 255, 0.7);
+        }
         .chat-body {
             flex-grow: 1;
             padding: 15px;
@@ -336,7 +347,7 @@
                 margin-top: 10px;
             }
             .chat-body {
-                max-height: calc(100vh - 250px);
+                max-height: calc(100vh - 300px);
             }
             .daily-questions h2 {
                 font-size: 1.2rem;
@@ -379,6 +390,7 @@
             </div>
             <div class="chatbot">
                 <div class="chat-header">QurixAI - Your Crypto AI Assistant</div>
+                <div class="last-updated">Last Updated: 11:30 PM IST, Tuesday, August 19, 2025</div>
                 <div class="chat-body" id="chat-body">
                     <div class="message bot-message">
                         <div class="message-text">Hey there! Ask me anything about crypto or @GoKiteAI!</div>
