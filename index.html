@@ -163,6 +163,7 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            margin-bottom: 120px; /* Space for fixed input */
         }
         .light .chatbot {
             background: rgba(245, 245, 255, 0.9);
@@ -197,6 +198,7 @@
             padding: 15px;
             overflow-y: auto;
             background: #1e2a44;
+            max-height: calc(100vh - 300px);
         }
         .light .chat-body {
             background: #f5f5ff;
@@ -247,13 +249,53 @@
             50% { opacity: 0.5; }
         }
         .chat-input {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             padding: 10px;
             background: rgba(10, 10, 35, 0.9);
             border-top: 1px solid #00d4ff;
+            z-index: 1000;
         }
         .light .chat-input {
             background: rgba(245, 245, 255, 0.9);
             border-top: 1px solid #1a1a3e;
+        }
+        .mode-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .mode-btn {
+            padding: 8px 15px;
+            border: 1px solid #00d4ff;
+            background: rgba(10, 10, 35, 0.7);
+            color: #00d4ff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .light .mode-btn {
+            background: rgba(245, 245, 255, 0.7);
+            border: 1px solid #1a1a3e;
+            color: #1a1a3e;
+        }
+        .mode-btn.active {
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            color: #ffffff;
+        }
+        .light .mode-btn.active {
+            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+        }
+        .mode-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+        .light .mode-btn:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
         .input-wrapper {
             display: flex;
@@ -323,10 +365,68 @@
         .light .prompt-btn:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 35, 0.9);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            z-index: 1001;
+        }
+        .light .popup {
+            background: rgba(245, 245, 255, 0.9);
+            border: 1px solid #1a1a3e;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .popup.active {
+            display: block;
+        }
+        .popup img {
+            max-width: 200px;
+            margin: 10px 0;
+        }
+        .popup p {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .wallet-address {
+            font-size: 0.85rem;
+            word-break: break-all;
+            color: #00d4ff;
+        }
+        .light .wallet-address {
+            color: #1a1a3e;
+        }
+        .popup button {
+            padding: 8px 15px;
+            border: none;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            color: #ffffff;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .light .popup button {
+            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+        }
+        .popup button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+        .light .popup button:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
         .page {
             display: none;
             padding: 20px;
             margin-top: 60px;
+            margin-bottom: 120px; /* Space for fixed input */
         }
         .page.active {
             display: block;
@@ -347,13 +447,16 @@
                 margin-top: 10px;
             }
             .chat-body {
-                max-height: calc(100vh - 300px);
+                max-height: calc(100vh - 350px);
             }
             .daily-questions h2 {
                 font-size: 1.2rem;
             }
             .question-card p {
                 font-size: 0.85rem;
+            }
+            .popup img {
+                max-width: 150px;
             }
         }
     </style>
@@ -366,6 +469,7 @@
         </div>
         <div class="menu">
             <a href="#" data-page="chat">Chat</a>
+            <a href="#" data-page="expert">Expert</a>
             <a href="#" data-page="settings">Settings</a>
             <a href="#" data-page="about">About</a>
         </div>
@@ -390,25 +494,17 @@
             </div>
             <div class="chatbot">
                 <div class="chat-header">QurixAI - Your Crypto AI Assistant</div>
-                <div class="last-updated">Last Updated: 11:30 PM IST, Tuesday, August 19, 2025</div>
+                <div class="last-updated">Last Updated: 11:41 PM IST, Tuesday, August 19, 2025</div>
                 <div class="chat-body" id="chat-body">
                     <div class="message bot-message">
-                        <div class="message-text">Hey there! Ask me anything about crypto or @GoKiteAI!</div>
-                    </div>
-                </div>
-                <div class="chat-input">
-                    <div class="input-wrapper">
-                        <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
-                        <button id="send-btn">Send</button>
-                    </div>
-                    <div class="prompt-buttons">
-                        <button class="prompt-btn" data-prompt="BTC price">BTC Price</button>
-                        <button class="prompt-btn" data-prompt="ETH gas fee">ETH Gas Fee</button>
-                        <button class="prompt-btn" data-prompt="Top gainers">Top Gainers</button>
-                        <button class="prompt-btn" data-prompt="Crypto news">Crypto News</button>
+                        <div class="message-text">Hey there! Ask me anything about crypto or @GoKiteAI! Use Fast or Normal mode, or unlock Expert mode for hand-to-hand replies.</div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="expert-page" class="page">
+            <h2>Expert Mode</h2>
+            <p>Expert mode is locked. Please make a payment to unlock hand-to-hand replies.</p>
         </div>
         <div id="settings-page" class="page">
             <h2>Settings</h2>
@@ -419,6 +515,28 @@
             <p>QurixAI is an advanced AI-powered platform built exclusively for the world of crypto and Web3. Our vision is to transform the way users interact with digital assets by combining the speed of artificial intelligence with the transparency of blockchain. Whether it’s generating real-time trading insights, building automated strategies, or simplifying complex on-chain data, QurixAI is designed to give every user a smarter edge in the market.</p>
             <p>We believe that navigating crypto shouldn’t be complicated. That’s why QurixAI focuses on making tools that are not only powerful but also user-friendly, allowing both beginners and professionals to benefit. From identifying hidden market opportunities to providing predictive analytics, our platform ensures users can trade, invest, and manage their portfolios with confidence.</p>
             <p>In a rapidly evolving industry, QurixAI stands for innovation, trust, and accessibility. By bridging AI and blockchain, we aim to build a future where intelligence drives every decision — and where crypto becomes easier, faster, and more reliable for everyone.</p>
+        </div>
+        <div class="chat-input">
+            <div class="mode-buttons">
+                <button class="mode-btn active" data-mode="fast">Fast</button>
+                <button class="mode-btn" data-mode="normal">Normal</button>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+                <button id="send-btn">Send</button>
+            </div>
+            <div class="prompt-buttons">
+                <button class="prompt-btn" data-prompt="BTC price">BTC Price</button>
+                <button class="prompt-btn" data-prompt="ETH gas fee">ETH Gas Fee</button>
+                <button class="prompt-btn" data-prompt="Top gainers">Top Gainers</button>
+                <button class="prompt-btn" data-prompt="Crypto news">Crypto News</button>
+            </div>
+        </div>
+        <div id="expert-popup" class="popup">
+            <img src="https://i.postimg.cc/d7fw0jf4/QR.jpg" alt="QR Code">
+            <p>To unlock the Expert mode, a payment of $10 worth of ETH is required.</p>
+            <p class="wallet-address">Wallet Address: 0x0CDDadD86324b0f3f4C2E5C4ff4826BF4C5c31C7</p>
+            <button id="confirm-payment">Confirm Payment</button>
         </div>
     </div>
     <script>
@@ -536,8 +654,13 @@
         const sendBtn = document.getElementById('send-btn');
         const promptButtons = document.querySelectorAll('.prompt-btn');
         const questionCards = document.querySelectorAll('.question-card');
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        const expertPopup = document.getElementById('expert-popup');
+        const confirmPayment = document.getElementById('confirm-payment');
 
         let isDarkMode = true;
+        let selectedMode = 'fast';
+        let isExpertUnlocked = false;
 
         toggleMode.addEventListener('click', () => {
             isDarkMode = !isDarkMode;
@@ -553,11 +676,26 @@
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const pageId = link.getAttribute('data-page');
-                pages.forEach(page => {
-                    page.classList.toggle('active', page.id === `${pageId}-page`);
-                });
-                menu.classList.remove('open');
+                if (pageId === 'expert' && !isExpertUnlocked) {
+                    expertPopup.classList.add('active');
+                } else {
+                    pages.forEach(page => {
+                        page.classList.toggle('active', page.id === `${pageId}-page`);
+                    });
+                    menu.classList.remove('open');
+                }
             });
+        });
+
+        confirmPayment.addEventListener('click', () => {
+            // Simulate payment verification (replace with actual blockchain check in production)
+            isExpertUnlocked = true;
+            expertPopup.classList.remove('active');
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === 'expert-page');
+            });
+            menu.classList.remove('open');
+            addMessage('Expert mode unlocked! Ask your question for a hand-to-hand reply.', 'bot-message');
         });
 
         promptButtons.forEach(btn => {
@@ -571,6 +709,14 @@
             card.addEventListener('click', () => {
                 userInput.value = card.getAttribute('data-question');
                 sendBtn.click();
+            });
+        });
+
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedMode = btn.getAttribute('data-mode');
             });
         });
 
@@ -623,10 +769,13 @@
             chatBody.appendChild(thinkingDiv);
             chatBody.scrollTop = chatBody.scrollHeight;
 
+            const delay = selectedMode === 'fast' ? 5000 : 10000;
             setTimeout(() => {
                 chatBody.removeChild(thinkingDiv);
                 const matched = questions.find(q => question.includes(q.q.toLowerCase()));
-                if (matched) {
+                if (isExpertUnlocked && pages[1].classList.contains('active')) {
+                    typeAnswer('Expert mode: Hand-to-hand reply for your question is being prepared. Please wait.');
+                } else if (matched) {
                     typeAnswer(matched.a);
                 } else if (question.includes('btc price') || question.includes('bitcoin price')) {
                     typeAnswer('AI will respond here: The current BTC price is not available in my data. Please check a live price feed like CoinGecko.');
@@ -643,7 +792,7 @@
                 } else {
                     typeAnswer('Sorry, I don’t have an answer for that. Try asking about @GoKiteAI or crypto topics like BTC price or ETH gas fees!');
                 }
-            }, Math.random() * 2000 + 2000);
+            }, delay);
         });
 
         userInput.addEventListener('keypress', (e) => {
