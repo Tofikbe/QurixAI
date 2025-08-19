@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QurixAI - Crypto AI Chatbot</title>
+    <title>QurixAI - Professional AI Chat</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <style>
@@ -17,7 +17,7 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #0a0a23, #1a1a3e);
             color: #e0e0e0;
-            overflow-x: hidden;
+            display: flex;
             transition: background 0.3s ease, color 0.3s ease;
         }
         body.light {
@@ -25,32 +25,38 @@
             color: #1a1a3e;
         }
         .container {
-            max-width: 100%;
-            padding: 15px;
             display: flex;
-            flex-direction: column;
+            width: 100%;
             min-height: 100vh;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(10, 10, 35, 0.8);
-            backdrop-filter: blur(10px);
+        .sidebar {
+            width: 250px;
+            background: rgba(10, 10, 35, 0.9);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            border-right: 1px solid #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
         }
-        .light .header {
-            background: rgba(245, 245, 255, 0.8);
+        .light .sidebar {
+            background: rgba(245, 245, 255, 0.9);
+            border-right: 1px solid #1a1a3e;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+            position: fixed;
+            z-index: 1001;
         }
         .menu-btn {
-            cursor: pointer;
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
             font-size: 28px;
             color: #00d4ff;
+            cursor: pointer;
+            z-index: 1002;
             transition: transform 0.3s ease;
         }
         .light .menu-btn {
@@ -59,153 +65,141 @@
         .menu-btn:hover {
             transform: scale(1.1);
         }
-        .toggle-mode {
-            cursor: pointer;
-            font-size: 24px;
-            color: #00d4ff;
-            transition: color 0.3s ease;
-        }
-        .light .toggle-mode {
-            color: #1a1a3e;
-        }
-        .toggle-mode:hover {
-            color: #ff00ff;
-        }
-        .light .toggle-mode:hover {
-            color: #ff00ff;
-        }
-        .menu {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            max-width: 300px;
-            height: 100vh;
-            background: #0f172a;
-            padding: 20px;
-            transition: left 0.3s ease;
-            z-index: 999;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-        }
-        .light .menu {
-            background: #f5f5ff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        }
-        .menu.open {
-            left: 0;
-        }
-        .menu a {
+        .new-chat-btn {
             display: block;
-            color: #00d4ff;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 20px 0;
-            transition: color 0.2s ease;
-        }
-        .light .menu a {
-            color: #1a1a3e;
-        }
-        .menu a:hover {
-            color: #ff00ff;
-        }
-        .light .menu a:hover {
-            color: #ff00ff;
-        }
-        .daily-questions {
-            margin-top: 60px;
-            margin-bottom: 20px;
-        }
-        .daily-questions h2 {
-            font-size: 1.5rem;
-            color: #00d4ff;
+            padding: 10px;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            color: #ffffff;
             text-align: center;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px #00d4ff;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .light .daily-questions h2 {
-            color: #1a1a3e;
-            text-shadow: none;
+        .light .new-chat-btn {
+            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
         }
-        .question-card {
-            background: rgba(10, 10, 35, 0.7);
-            border: 1px solid #00d4ff;
-            border-radius: 15px;
-            padding: 15px;
+        .new-chat-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        .light .new-chat-btn:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        .chat-list {
+            list-style: none;
+        }
+        .chat-list li {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             margin-bottom: 10px;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            font-size: 0.85rem;
+            transition: background 0.2s ease;
         }
-        .light .question-card {
-            background: rgba(245, 245, 255, 0.7);
-            border: 1px solid #1a1a3e;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        .light .chat-list li {
+            background: rgba(0, 0, 0, 0.1);
         }
-        .question-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        .chat-list li:hover {
+            background: rgba(0, 212, 255, 0.3);
         }
-        .light .question-card:hover {
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        .light .chat-list li:hover {
+            background: rgba(0, 0, 0, 0.2);
         }
-        .question-card p {
-            font-size: 0.9rem;
-            color: #e0e0e0;
+        .main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 120px;
         }
-        .light .question-card p {
-            color: #1a1a3e;
-        }
-        .chatbot {
+        .chat-area {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             background: rgba(10, 10, 35, 0.9);
             border-radius: 15px;
-            overflow: hidden;
+            margin: 10px;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-            margin-bottom: 120px;
         }
-        .light .chatbot {
+        .light .chat-area {
             background: rgba(245, 245, 255, 0.9);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
         .chat-header {
-            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 15px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
             color: #ffffff;
+            border-radius: 15px 15px 0 0;
             text-shadow: 0 0 10px #00d4ff;
         }
         .light .chat-header {
             background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+        }
+        .chat-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .menu-icon {
+            cursor: pointer;
+            font-size: 24px;
             color: #ffffff;
         }
-        .last-updated {
-            font-size: 0.8rem;
-            color: #00d4ff;
-            text-align: center;
-            padding: 5px 0;
-            background: rgba(10, 10, 35, 0.7);
+        .dropdown {
+            position: relative;
         }
-        .light .last-updated {
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: rgba(10, 10, 35, 0.9);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            z-index: 1000;
+        }
+        .light .dropdown-content {
+            background: rgba(245, 245, 255, 0.9);
+            border: 1px solid #1a1a3e;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .dropdown-content.active {
+            display: block;
+        }
+        .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s ease;
+        }
+        .light .dropdown-content a {
             color: #1a1a3e;
-            background: rgba(245, 245, 255, 0.7);
+        }
+        .dropdown-content a:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+        .light .dropdown-content a:hover {
+            background: rgba(0, 0, 0, 0.2);
         }
         .chat-body {
             flex-grow: 1;
             padding: 15px;
             overflow-y: auto;
             background: #1e2a44;
-            max-height: calc(100vh - 300px);
+            border-radius: 0 0 15px 15px;
         }
         .light .chat-body {
             background: #f5f5ff;
         }
         .message {
-            margin-bottom: 15px;
             display: flex;
+            margin-bottom: 15px;
             align-items: flex-start;
         }
         .user-message {
@@ -214,8 +208,12 @@
         .bot-message {
             justify-content: flex-start;
         }
-        .message-text {
+        .message-content {
             max-width: 80%;
+            display: flex;
+            flex-direction: column;
+        }
+        .message-text {
             padding: 10px 15px;
             border-radius: 10px;
             font-size: 0.9rem;
@@ -236,6 +234,14 @@
         .light .bot-message .message-text {
             background: #e0e0ff;
             color: #1a1a3e;
+        }
+        .timestamp {
+            font-size: 0.7rem;
+            color: #a0a0a0;
+            margin-top: 5px;
+        }
+        .light .timestamp {
+            color: #606060;
         }
         .thinking {
             color: #00d4ff;
@@ -262,45 +268,11 @@
             background: rgba(245, 245, 255, 0.9);
             border-top: 1px solid #1a1a3e;
         }
-        .mode-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .mode-btn {
-            padding: 8px 15px;
-            border: 1px solid #00d4ff;
-            background: rgba(10, 10, 35, 0.7);
-            color: #00d4ff;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .light .mode-btn {
-            background: rgba(245, 245, 255, 0.7);
-            border: 1px solid #1a1a3e;
-            color: #1a1a3e;
-        }
-        .mode-btn.active {
-            background: linear-gradient(90deg, #00d4ff, #ff00ff);
-            color: #ffffff;
-        }
-        .light .mode-btn.active {
-            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
-        }
-        .mode-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-        .light .mode-btn:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
         .input-wrapper {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            max-width: 800px;
+            margin: 0 auto;
         }
         #user-input {
             flex-grow: 1;
@@ -317,13 +289,28 @@
             border: 1px solid #1a1a3e;
             color: #1a1a3e;
         }
+        #image-upload {
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #00d4ff;
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: transform 0.2s ease;
+        }
+        .light #image-upload {
+            color: #1a1a3e;
+        }
+        #image-upload:hover {
+            transform: scale(1.1);
+        }
         #send-btn {
             padding: 10px 15px;
             border: none;
             background: linear-gradient(90deg, #00d4ff, #ff00ff);
             color: #ffffff;
             border-radius: 20px;
-            margin-left: 10px;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -337,99 +324,107 @@
         .light #send-btn:hover {
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         }
-        .prompt-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        .prompt-btn {
-            padding: 8px 15px;
-            border: 1px solid #00d4ff;
-            background: rgba(10, 10, 35, 0.7);
-            color: #00d4ff;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .light .prompt-btn {
-            background: rgba(245, 245, 255, 0.7);
-            border: 1px solid #1a1a3e;
-            color: #1a1a3e;
-        }
-        .prompt-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-        .light .prompt-btn:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-        .popup {
+        .settings-modal {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .settings-modal.active {
+            display: flex;
+        }
+        .settings-content {
             background: rgba(10, 10, 35, 0.9);
             border: 1px solid #00d4ff;
             border-radius: 15px;
             padding: 20px;
-            text-align: center;
+            max-width: 400px;
+            width: 90%;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-            z-index: 1001;
+            animation: fadeIn 0.3s ease-in;
         }
-        .light .popup {
+        .light .settings-content {
             background: rgba(245, 245, 255, 0.9);
             border: 1px solid #1a1a3e;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
-        .popup.active {
-            display: block;
-        }
-        .popup img {
-            max-width: 200px;
-            margin: 10px 0;
-        }
-        .popup p {
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-        .wallet-address {
-            font-size: 0.85rem;
-            word-break: break-all;
+        .settings-content h2 {
+            font-size: 1.2rem;
             color: #00d4ff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00d4ff;
         }
-        .light .wallet-address {
+        .light .settings-content h2 {
             color: #1a1a3e;
+            text-shadow: none;
         }
-        .popup button {
+        .settings-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .light .settings-item {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .settings-item button, .settings-item a {
             padding: 8px 15px;
             border: none;
             background: linear-gradient(90deg, #00d4ff, #ff00ff);
             color: #ffffff;
             border-radius: 20px;
             cursor: pointer;
+            text-decoration: none;
+            font-size: 0.85rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .light .popup button {
+        .light .settings-item button, .light .settings-item a {
             background: linear-gradient(90deg, #1a1a3e, #ff00ff);
         }
-        .popup button:hover {
+        .settings-item button:hover, .settings-item a:hover {
             transform: scale(1.05);
             box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
-        .light .popup button:hover {
+        .light .settings-item button:hover, .light .settings-item a:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
-        .page {
-            display: none;
-            padding: 20px;
-            margin-top: 60px;
-            margin-bottom: 120px;
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #2a3a5a;
+            border-radius: 12px;
+            cursor: pointer;
         }
-        .page.active {
-            display: block;
+        .light .toggle-switch {
+            background: #e0e0ff;
+        }
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #00d4ff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s ease;
+        }
+        .light .toggle-switch::before {
+            background: #1a1a3e;
+        }
+        .toggle-switch.active::before {
+            transform: translateX(26px);
         }
         .fade-in {
             animation: fadeIn 0.5s ease-in;
@@ -443,357 +438,261 @@
             animation: blink 0.75s step-end infinite;
         }
         @media (max-width: 768px) {
-            .chatbot {
-                margin-top: 10px;
+            .sidebar {
+                position: fixed;
+                width: 80%;
+                max-width: 250px;
+                z-index: 1001;
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .menu-btn {
+                display: block;
+            }
+            .main {
+                margin-left: 0;
             }
             .chat-body {
-                max-height: calc(100vh - 350px);
+                max-height: calc(100vh - 200px);
             }
-            .daily-questions h2 {
-                font-size: 1.2rem;
-            }
-            .question-card p {
-                font-size: 0.85rem;
-            }
-            .popup img {
-                max-width: 150px;
+            .settings-content {
+                width: 95%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <span class="menu-btn material-symbols-outlined">menu</span>
-            <span class="toggle-mode material-symbols-outlined">dark_mode</span>
+        <span class="menu-btn material-symbols-outlined">menu</span>
+        <div class="sidebar">
+            <a href="#" class="new-chat-btn">New Chat</a>
+            <ul class="chat-list" id="chat-list"></ul>
         </div>
-        <div class="menu">
-            <a href="#" data-page="chat">Chat</a>
-            <a href="#" data-page="expert">Expert</a>
-            <a href="#" data-page="settings">Settings</a>
-            <a href="#" data-page="about">About</a>
-        </div>
-        <div id="chat-page" class="page active">
-            <div class="daily-questions">
-                <h2>Daily Top Questions</h2>
-                <div class="question-card" data-question="What is the current BTC price today?">
-                    <p>What is the current BTC price today?</p>
+        <div class="main">
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h2>QurixAI - Your Crypto AI Assistant</h2>
+                    <div class="dropdown">
+                        <span class="menu-icon material-symbols-outlined">more_vert</span>
+                        <div class="dropdown-content" id="dropdown-content">
+                            <a href="#" data-action="share">Share this chat</a>
+                            <a href="#" data-action="settings">Settings</a>
+                            <a href="#" data-action="help">Help</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="question-card" data-question="Ethereum gas fee right now?">
-                    <p>Ethereum gas fee right now?</p>
-                </div>
-                <div class="question-card" data-question="Which altcoins are trending?">
-                    <p>Which altcoins are trending?</p>
-                </div>
-                <div class="question-card" data-question="Top gainers and losers in last 24h?">
-                    <p>Top gainers and losers in last 24h?</p>
-                </div>
-                <div class="question-card" data-question="Best stablecoins for yield?">
-                    <p>Best stablecoins for yield?</p>
-                </div>
-            </div>
-            <div class="chatbot">
-                <div class="chat-header">QurixAI - Your Crypto AI Assistant</div>
-                <div class="last-updated">Last Updated: 11:46 PM IST, Tuesday, August 19, 2025</div>
                 <div class="chat-body" id="chat-body">
                     <div class="message bot-message">
-                        <div class="message-text">Hey there! Ask me about crypto, DeFi platforms, or @GoKiteAI! Use Fast or Normal mode, or unlock Expert mode for hand-to-hand replies.</div>
+                        <div class="message-content">
+                            <div class="message-text">Hey there! Ask me anything about crypto or Web3!</div>
+                            <div class="timestamp">11:50 PM IST, Tue, Aug 19, 2025</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="expert-page" class="page">
-            <h2>Expert Mode</h2>
-            <p>Expert mode is locked. Please make a payment to unlock hand-to-hand replies.</p>
-        </div>
-        <div id="settings-page" class="page">
-            <h2>Settings</h2>
-            <p>Coming Soon</p>
-        </div>
-        <div id="about-page" class="page">
-            <h2>About QurixAI</h2>
-            <p>QurixAI is an advanced AI-powered platform built exclusively for the world of crypto and Web3. Our vision is to transform the way users interact with digital assets by combining the speed of artificial intelligence with the transparency of blockchain. Whether it’s generating real-time trading insights, building automated strategies, or simplifying complex on-chain data, QurixAI is designed to give every user a smarter edge in the market.</p>
-            <p>We believe that navigating crypto shouldn’t be complicated. That’s why QurixAI focuses on making tools that are not only powerful but also user-friendly, allowing both beginners and professionals to benefit. From identifying hidden market opportunities to providing predictive analytics, our platform ensures users can trade, invest, and manage their portfolios with confidence.</p>
-            <p>In a rapidly evolving industry, QurixAI stands for innovation, trust, and accessibility. By bridging AI and blockchain, we aim to build a future where intelligence drives every decision — and where crypto becomes easier, faster, and more reliable for everyone.</p>
-        </div>
-        <div class="chat-input">
-            <div class="mode-buttons">
-                <button class="mode-btn active" data-mode="fast">Fast</button>
-                <button class="mode-btn" data-mode="normal">Normal</button>
-            </div>
-            <div class="input-wrapper">
-                <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
-                <button id="send-btn">Send</button>
-            </div>
-            <div class="prompt-buttons">
-                <button class="prompt-btn" data-prompt="BTC price">BTC Price</button>
-                <button class="prompt-btn" data-prompt="ETH gas fee">ETH Gas Fee</button>
-                <button class="prompt-btn" data-prompt="Top gainers">Top Gainers</button>
-                <button class="prompt-btn" data-prompt="Crypto news">Crypto News</button>
+            <div class="chat-input">
+                <div class="input-wrapper">
+                    <label for="image-upload-input">
+                        <span class="material-symbols-outlined" id="image-upload">image</span>
+                    </label>
+                    <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
+                    <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+                    <button id="send-btn">Send</button>
+                </div>
             </div>
         </div>
-        <div id="expert-popup" class="popup">
-            <img src="https://i.postimg.cc/d7fw0jf4/QR.jpg" alt="QR Code">
-            <p>To unlock the Expert mode, a payment of $10 worth of ETH is required.</p>
-            <p class="wallet-address">Wallet Address: 0x0CDDadD86324b0f3f4C2E5C4ff4826BF4C5c31C7</p>
-            <button id="confirm-payment">Confirm Payment</button>
+        <div class="settings-modal" id="settings-modal">
+            <div class="settings-content">
+                <h2>Settings</h2>
+                <div class="settings-item">
+                    <span>Dark Mode</span>
+                    <div class="toggle-switch active" id="dark-mode-toggle"></div>
+                </div>
+                <div class="settings-item">
+                    <span>Clear Chats</span>
+                    <button id="clear-chats">Clear</button>
+                </div>
+                <div class="settings-item">
+                    <span>Account/Profile</span>
+                    <button disabled>Coming Soon</button>
+                </div>
+                <div class="settings-item">
+                    <span>About QurixAI</span>
+                    <a href="#" id="about-link">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="settings-modal" id="about-modal">
+            <div class="settings-content">
+                <h2>About QurixAI</h2>
+                <p>QurixAI is an advanced AI-powered platform built exclusively for the world of crypto and Web3. Our vision is to transform the way users interact with digital assets by combining the speed of artificial intelligence with the transparency of blockchain. Whether it’s generating real-time trading insights, building automated strategies, or simplifying complex on-chain data, QurixAI is designed to give every user a smarter edge in the market.</p>
+                <p>We believe that navigating crypto shouldn’t be complicated. That’s why QurixAI focuses on making tools that are not only powerful but also user-friendly, allowing both beginners and professionals to benefit. From identifying hidden market opportunities to providing predictive analytics, our platform ensures users can trade, invest, and manage their portfolios with confidence.</p>
+                <p>In a rapidly evolving industry, QurixAI stands for innovation, trust, and accessibility. By bridging AI and blockchain, we aim to build a future where intelligence drives every decision — and where crypto becomes easier, faster, and more reliable for everyone.</p>
+                <button id="close-about">Close</button>
+            </div>
         </div>
     </div>
     <script>
-        const questions = [
-            { q: "What is @GoKiteAI?", a: "@GoKiteAI is an innovative ecosystem that connects autonomous AI modules with built-in identity, payments, and governance, enabling seamless, trustless interactions across data, compute, and AI services in the Web3 space." },
-            { q: "How does @GoKiteAI work?", a: "It integrates AI agents with blockchain technology, allowing autonomous modules to handle tasks like data processing, payments, and governance, creating a decentralized and efficient network." },
-            { q: "What is the InfraBUIDL (AI) program?", a: "InfraBUIDL (AI) is a $15M grant program by @AvalancheFDN, where @GoKiteAI serves as a joint selection committee member to fund innovative AI-driven Web3 projects." },
-            { q: "Who funds @GoKiteAI's ecosystem?", a: "Projects like @codatta_io in the @GoKiteAI ecosystem received funding through the InfraBUIDL (AI) initiative by @AvalancheFDN." },
-            { q: "What is @codatta_io?", a: "@codatta_io ($XNY) is a project incubated by @GoKiteAI, focusing on decentralized data solutions within the Kite AI ecosystem." },
-            { q: "What are the benefits of @GoKiteAI?", a: "It offers trustless interactions, scalable AI solutions, and seamless integration of data and compute services for Web3 applications." },
-            { q: "How does @GoKiteAI support developers?", a: "It provides funding, infrastructure, and tools through programs like InfraBUIDL (AI) to help developers build AI-driven Web3 projects." },
-            { q: "What is the role of AI in @GoKiteAI?", a: "AI powers autonomous modules for tasks like data analysis, predictive modeling, and automated decision-making in the Web3 ecosystem." },
-            { q: "Is @GoKiteAI decentralized?", a: "Yes, it leverages blockchain to ensure decentralized, trustless operations across its AI modules." },
-            { q: "What makes @GoKiteAI unique?", a: "Its combination of AI and blockchain enables autonomous, scalable, and secure interactions tailored for Web3." },
-            { q: "How does @GoKiteAI handle payments?", a: "Payments are managed through integrated blockchain-based systems, ensuring transparency and security." },
-            { q: "Can @GoKiteAI be used for trading?", a: "Yes, its AI modules can generate real-time trading insights and automate strategies for crypto markets." },
-            { q: "What is the vision of @GoKiteAI?", a: "To create a seamless, AI-driven, decentralized internet for data, compute, and services in Web3." },
-            { q: "How does @GoKiteAI ensure trust?", a: "By using blockchain for transparent and verifiable transactions and interactions." },
-            { q: "What is the $XNY token?", a: "$XNY is the native token of @codatta_io, a project within the @GoKiteAI ecosystem." },
-            { q: "How can I join @GoKiteAI's ecosystem?", a: "Developers can apply for funding or collaborate through programs like InfraBUIDL (AI)." },
-            { q: "Does @GoKiteAI support NFTs?", a: "Yes, it can integrate with NFT platforms for data and asset management." },
-            { q: "What blockchains does @GoKiteAI support?", a: "It primarily aligns with @AvalancheFDN but can integrate with other blockchains." },
-            { q: "How secure is @GoKiteAI?", a: "It uses blockchain's immutability and cryptographic security to ensure safe operations." },
-            { q: "Can @GoKiteAI predict market trends?", a: "Its AI modules can analyze data to provide predictive analytics for market trends." },
-            { q: "What industries does @GoKiteAI target?", a: "Primarily crypto, Web3, DeFi, and data-driven industries." },
-            { q: "How does @GoKiteAI handle data?", a: "It processes on-chain and off-chain data using AI for actionable insights." },
-            { q: "Is @GoKiteAI open-source?", a: "Certain components may be open-source, depending on the project within its ecosystem." },
-            { q: "What is the role of @AvalancheFDN in @GoKiteAI?", a: "It provides funding and support through initiatives like InfraBUIDL (AI)." },
-            { q: "Can @GoKiteAI automate strategies?", a: "Yes, it supports automated trading and decision-making strategies." },
-            { q: "How does @GoKiteAI improve user experience?", a: "By offering intuitive AI tools and seamless blockchain integration." },
-            { q: "What is the Kite AI architecture?", a: "A modular system connecting AI agents with blockchain for decentralized operations." },
-            { q: "Does @GoKiteAI have a governance model?", a: "Yes, it includes built-in governance for trustless coordination." },
-            { q: "How fast is @GoKiteAI?", a: "It leverages high-speed blockchain and AI for near-instant responses." },
-            { q: "Can beginners use @GoKiteAI?", a: "Yes, its tools are designed to be user-friendly for all levels." },
-            { q: "What is the role of $XNY in @GoKiteAI?", a: "It powers transactions and services within the @codatta_io project." },
-            { q: "How does @GoKiteAI handle scalability?", a: "Its modular architecture ensures scalability for large-scale applications." },
-            { q: "Can @GoKiteAI integrate with DeFi?", a: "Yes, it supports DeFi protocols for lending, staking, and more." },
-            { q: "What is the future of @GoKiteAI?", a: "To lead AI-driven innovation in the Web3 space." },
-            { q: "How does @GoKiteAI ensure privacy?", a: "It uses blockchain encryption and secure data handling." },
-            { q: "Can @GoKiteAI be used for analytics?", a: "Yes, it provides predictive and real-time analytics for crypto markets." },
-            { q: "What is the @GoKiteAI ecosystem?", a: "A network of AI modules, blockchain, and projects like @codatta_io." },
-            { q: "How does @GoKiteAI support startups?", a: "Through funding and incubation programs like InfraBUIDL (AI)." },
-            { q: "Is @GoKiteAI community-driven?", a: "Yes, it encourages community participation and development." },
-            { q: "What are @GoKiteAI's key features?", a: "AI automation, blockchain integration, and modular design." },
-            { q: "Can @GoKiteAI handle large datasets?", a: "Yes, its AI is optimized for big data processing." },
-            { q: "How does @GoKiteAI compare to other AI platforms?", a: "It’s unique in combining AI with Web3 and blockchain." },
-            { q: "What is the @GoKiteAI incubation program?", a: "A program to support and fund innovative Web3 projects." },
-            { q: "Can @GoKiteAI be used for staking?", a: "Yes, it supports staking through DeFi integrations." },
-            { q: "How does @GoKiteAI handle transactions?", a: "Through secure, blockchain-based payment systems." },
-            { q: "What is the role of AI agents in @GoKiteAI?", a: "They automate tasks like trading, data analysis, and governance." },
-            { q: "Is @GoKiteAI suitable for enterprises?", a: "Yes, it offers scalable solutions for enterprise use." },
-            { q: "How does @GoKiteAI ensure transparency?", a: "By leveraging blockchain for verifiable records." },
-            { q: "Can @GoKiteAI integrate with wallets?", a: "Yes, it supports wallet connections for seamless transactions." },
-            { q: "What is the @GoKiteAI funding model?", a: "It includes grants and token-based incentives." },
-            { q: "How does @GoKiteAI handle security audits?", a: "It follows strict blockchain security protocols." },
-            { q: "Can @GoKiteAI predict crypto prices?", a: "It provides predictive analytics but cannot guarantee prices." },
-            { q: "What is the @GoKiteAI community?", a: "A group of developers, users, and projects building on its ecosystem." },
-            { q: "How does @GoKiteAI support DeFi projects?", a: "By providing AI tools and funding for DeFi innovation." },
-            { q: "Is @GoKiteAI mobile-friendly?", a: "Yes, its tools are optimized for mobile devices." },
-            { q: "What is the @GoKiteAI token?", a: "It may include tokens like $XNY for ecosystem transactions." },
-            { q: "How does @GoKiteAI handle governance disputes?", a: "Through decentralized governance protocols." },
-            { q: "Can @GoKiteAI be used for portfolio management?", a: "Yes, it offers tools for portfolio tracking and optimization." },
-            { q: "What is the @GoKiteAI roadmap?", a: "It focuses on expanding AI and Web3 integrations." },
-            { q: "How does @GoKiteAI ensure low fees?", a: "By leveraging efficient blockchain networks." },
-            { q: "Can @GoKiteAI support cross-chain operations?", a: "Yes, it can integrate with multiple blockchains." },
-            { q: "What is the @GoKiteAI developer community?", a: "A network of developers building on its platform." },
-            { q: "How does @GoKiteAI handle user feedback?", a: "It incorporates feedback for continuous improvement." },
-            { q: "Can @GoKiteAI be used for smart contracts?", a: "Yes, it supports smart contract interactions." },
-            { q: "What is the @GoKiteAI API?", a: "An interface for developers to integrate with its ecosystem." },
-            { q: "How does @GoKiteAI ensure data integrity?", a: "Through blockchain’s immutable ledger." },
-            { q: "Can @GoKiteAI be used for market analysis?", a: "Yes, it provides real-time market insights." },
-            { q: "What is the @GoKiteAI infrastructure?", a: "A combination of AI modules and blockchain networks." },
-            { q: "How does @GoKiteAI support tokenization?", a: "It enables token creation and management." },
-            { q: "Can @GoKiteAI integrate with exchanges?", a: "Yes, it supports exchange API integrations." },
-            { q: "What is the @GoKiteAI user base?", a: "Developers, traders, and Web3 enthusiasts." },
-            { q: "How does @GoKiteAI handle updates?", a: "Through community-driven and modular upgrades." },
-            { q: "Can @GoKiteAI be used for lending?", a: "Yes, through DeFi protocol integrations." },
-            { q: "What is the @GoKiteAI mission?", a: "To drive AI-powered innovation in Web3." },
-            { q: "How does @GoKiteAI ensure accessibility?", a: "By offering user-friendly tools for all levels." },
-            { q: "Can @GoKiteAI support real-time trading?", a: "Yes, it provides real-time trading insights." },
-            { q: "What is the @GoKiteAI technology stack?", a: "AI, blockchain, and modular architecture." },
-            { q: "How does @GoKiteAI handle compliance?", a: "It adheres to blockchain and regulatory standards." },
-            { q: "Can @GoKiteAI be used for data storage?", a: "Yes, through decentralized storage solutions." },
-            { q: "What is the @GoKiteAI ecosystem growth?", a: "It’s expanding through partnerships and funding." },
-            { q: "How does @GoKiteAI support innovation?", a: "By funding and incubating new projects." },
-            { q: "Can @GoKiteAI be used for governance?", a: "Yes, it includes decentralized governance tools." },
-            { q: "What is the @GoKiteAI market focus?", a: "Crypto, DeFi, and Web3 markets." },
-            { q: "How does @GoKiteAI handle latency?", a: "By using high-speed blockchain and AI processing." },
-            { q: "Can @GoKiteAI support AI research?", a: "Yes, it provides tools for AI development." },
-            { q: "What is the @GoKiteAI user interface?", a: "A clean, intuitive, and mobile-friendly UI." },
-            { q: "How does @GoKiteAI ensure reliability?", a: "Through robust blockchain and AI systems." },
-            { q: "Can @GoKiteAI be used for voting?", a: "Yes, through decentralized governance mechanisms." },
-            { q: "What is the @GoKiteAI funding process?", a: "It involves grants and community-driven funding." },
-            { q: "How does @GoKiteAI handle scalability issues?", a: "Through modular and decentralized architecture." },
-            { q: "Can @GoKiteAI support AI trading bots?", a: "Yes, it enables automated trading bots." },
-            { q: "What is the @GoKiteAI security model?", a: "It uses blockchain encryption and audits." },
-            { q: "How does @GoKiteAI handle user data?", a: "Securely, with blockchain-based privacy." },
-            { q: "Can @GoKiteAI integrate with DAOs?", a: "Yes, it supports DAO governance and operations." },
-            { q: "What is the @GoKiteAI development process?", a: "Iterative, community-driven, and modular." },
-            { q: "How does @GoKiteAI ensure user trust?", a: "Through transparency and blockchain verification." },
-            { q: "Can @GoKiteAI be used for NFT trading?", a: "Yes, it supports NFT market integrations." },
-            { q: "What is the @GoKiteAI adoption rate?", a: "Growing rapidly within the Web3 community." },
-            { q: "How does @GoKiteAI handle errors?", a: "Through robust error-handling in AI and blockchain." },
-            { q: "Can @GoKiteAI support cross-platform apps?", a: "Yes, it’s compatible with web and mobile." },
-            { q: "What is the @GoKiteAI long-term goal?", a: "To revolutionize Web3 with AI-driven solutions." }
-        ];
-
-        const menuBtn = document.querySelector('.menu-btn');
-        const menu = document.querySelector('.menu');
-        const menuLinks = document.querySelectorAll('.menu a');
-        const toggleMode = document.querySelector('.toggle-mode');
-        const pages = document.querySelectorAll('.page');
+        const chatList = document.getElementById('chat-list');
         const chatBody = document.getElementById('chat-body');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
-        const promptButtons = document.querySelectorAll('.prompt-btn');
-        const questionCards = document.querySelectorAll('.question-card');
-        const modeButtons = document.querySelectorAll('.mode-btn');
-        const expertPopup = document.getElementById('expert-popup');
-        const confirmPayment = document.getElementById('confirm-payment');
+        const imageUploadInput = document.getElementById('image-upload-input');
+        const menuBtn = document.querySelector('.menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const dropdownContent = document.getElementById('dropdown-content');
+        const menuIcon = document.querySelector('.menu-icon');
+        const settingsModal = document.getElementById('settings-modal');
+        const aboutModal = document.getElementById('about-modal');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const clearChats = document.getElementById('clear-chats');
+        const aboutLink = document.getElementById('about-link');
+        const closeAbout = document.getElementById('close-about');
 
         let isDarkMode = true;
-        let selectedMode = 'fast';
-        let isExpertUnlocked = false;
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        let currentChatId = null;
 
-        toggleMode.addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('light', !isDarkMode);
-            toggleMode.textContent = isDarkMode ? 'dark_mode' : 'light_mode';
-        });
+        function saveChats() {
+            localStorage.setItem('chats', JSON.stringify(chats));
+        }
 
-        menuBtn.addEventListener('click', () => {
-            menu.classList.toggle('open');
-        });
-
-        menuLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const pageId = link.getAttribute('data-page');
-                if (pageId === 'expert' && !isExpertUnlocked) {
-                    expertPopup.classList.add('active');
-                } else {
-                    pages.forEach(page => {
-                        page.classList.toggle('active', page.id === `${pageId}-page`);
-                    });
-                    menu.classList.remove('open');
-                }
+        function renderChats() {
+            chatList.innerHTML = '';
+            chats.forEach((chat, index) => {
+                const li = document.createElement('li');
+                li.textContent = chat.title;
+                li.dataset.chatId = index;
+                li.addEventListener('click', () => {
+                    currentChatId = index;
+                    loadChat();
+                    sidebar.classList.remove('active');
+                });
+                chatList.appendChild(li);
             });
-        });
+        }
 
-        confirmPayment.addEventListener('click', () => {
-            isExpertUnlocked = true;
-            expertPopup.classList.remove('active');
-            pages.forEach(page => {
-                page.classList.toggle('active', page.id === 'expert-page');
-            });
-            menu.classList.remove('open');
-            addMessage('Expert mode unlocked! Ask your question for a hand-to-hand reply.', 'bot-message');
-        });
+        function loadChat() {
+            chatBody.innerHTML = '';
+            if (currentChatId !== null && chats[currentChatId]) {
+                chats[currentChatId].messages.forEach(msg => {
+                    addMessage(msg.text, msg.type, msg.timestamp);
+                });
+            } else {
+                addMessage('Hey there! Ask me anything about crypto or Web3!', 'bot-message', '11:50 PM IST, Tue, Aug 19, 2025');
+            }
+        }
 
-        promptButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                userInput.value = btn.getAttribute('data-prompt');
-                sendBtn.click();
-            });
-        });
-
-        questionCards.forEach(card => {
-            card.addEventListener('click', () => {
-                userInput.value = card.getAttribute('data-question');
-                sendBtn.click();
-            });
-        });
-
-        modeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                modeButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedMode = btn.getAttribute('data-mode');
-            });
-        });
-
-        function addMessage(text, type) {
+        function addMessage(text, type, timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: 'numeric', hour12: true }) + ', Tue, Aug 19, 2025') {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type} fade-in`;
-            const messageText = document.createElement('div');
-            messageText.className = 'message-text';
-            messageText.textContent = text;
-            messageDiv.appendChild(messageText);
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text';
+            textDiv.textContent = text;
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'timestamp';
+            timeDiv.textContent = timestamp;
+            contentDiv.appendChild(textDiv);
+            contentDiv.appendChild(timeDiv);
+            messageDiv.appendChild(contentDiv);
             chatBody.appendChild(messageDiv);
             chatBody.scrollTop = chatBody.scrollHeight;
+
+            if (currentChatId !== null && chats[currentChatId]) {
+                chats[currentChatId].messages.push({ text, type, timestamp });
+                saveChats();
+            }
         }
 
         function typeAnswer(text) {
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message bot-message fade-in';
-            const messageText = document.createElement('div');
-            messageText.className = 'message-text typing';
-            messageDiv.appendChild(messageText);
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text typing';
+            contentDiv.appendChild(textDiv);
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'timestamp';
+            timeDiv.textContent = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: 'numeric', hour12: true }) + ', Tue, Aug 19, 2025';
+            contentDiv.appendChild(timeDiv);
             chatBody.appendChild(messageDiv);
             chatBody.scrollTop = chatBody.scrollHeight;
 
             const words = text.split(' ');
             let i = 0;
-            messageText.textContent = '';
+            textDiv.textContent = '';
             const interval = setInterval(() => {
                 if (i < words.length) {
-                    messageText.textContent += (i === 0 ? '' : ' ') + words[i];
+                    textDiv.textContent += (i === 0 ? '' : ' ') + words[i];
                     i++;
                 } else {
                     clearInterval(interval);
-                    messageText.classList.remove('typing');
+                    textDiv.classList.remove('typing');
+                    if (currentChatId !== null) {
+                        chats[currentChatId].messages.push({
+                            text,
+                            type: 'bot-message',
+                            timestamp: timeDiv.textContent
+                        });
+                        saveChats();
+                    }
                 }
             }, 100);
         }
 
+        document.querySelector('.new-chat-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const newChat = {
+                title: `Chat ${chats.length + 1}`,
+                messages: []
+            };
+            chats.push(newChat);
+            currentChatId = chats.length - 1;
+            saveChats();
+            renderChats();
+            loadChat();
+            sidebar.classList.remove('active');
+        });
+
         sendBtn.addEventListener('click', () => {
-            const question = userInput.value.trim().toLowerCase();
-            if (!question) return;
-            addMessage(question, 'user-message');
+            const message = userInput.value.trim();
+            if (!message) return;
+            if (currentChatId === null) {
+                chats.push({
+                    title: `Chat ${chats.length + 1}`,
+                    messages: []
+                });
+                currentChatId = chats.length - 1;
+                renderChats();
+            }
+            addMessage(message, 'user-message');
             userInput.value = '';
 
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'message bot-message';
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
             const thinkingText = document.createElement('div');
             thinkingText.className = 'message-text thinking';
-            thinkingText.textContent = 'QurixAI is thinking...';
-            thinkingDiv.appendChild(thinkingText);
+            thinkingText.textContent = 'AI is typing...';
+            contentDiv.appendChild(thinkingText);
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'timestamp';
+            timeDiv.textContent = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: 'numeric', hour12: true }) + ', Tue, Aug 19, 2025';
+            contentDiv.appendChild(timeDiv);
+            thinkingDiv.appendChild(contentDiv);
             chatBody.appendChild(thinkingDiv);
             chatBody.scrollTop = chatBody.scrollHeight;
 
-            const delay = selectedMode === 'fast' ? 5000 : 10000;
             setTimeout(() => {
                 chatBody.removeChild(thinkingDiv);
-                const matched = questions.find(q => question.includes(q.q.toLowerCase()));
-                if (isExpertUnlocked && pages[1].classList.contains('active')) {
-                    typeAnswer('Expert mode: Hand-to-hand reply for your question is being prepared. Please wait.');
-                } else if (matched) {
-                    typeAnswer(matched.a);
-                } else if (question.includes('btc price') || question.includes('bitcoin price')) {
-                    typeAnswer('AI will respond here: The current BTC price is not available in my data. Please check a live price feed like CoinGecko.');
-                } else if (question.includes('eth gas fee') || question.includes('ethereum gas fee')) {
-                    typeAnswer('AI will respond here: Current Ethereum gas fees can be checked on Etherscan or similar platforms.');
-                } else if (question.includes('top gainers')) {
-                    typeAnswer('AI will respond here: Top gainers and losers in the last 24 hours can be found on CoinMarketCap.');
-                } else if (question.includes('crypto news')) {
-                    typeAnswer('AI will respond here: For the latest crypto news, check sources like CoinDesk or CoinTelegraph.');
-                } else if (question.includes('altcoins trending')) {
-                    typeAnswer('AI will respond here: Trending altcoins can be found on platforms like CoinGecko or Twitter trends.');
-                } else if (question.includes('stablecoins for yield')) {
-                    typeAnswer('AI will respond here: Popular stablecoins for yield include USDC, USDT, and DAI on platforms like Aave or Compound.');
-                } else if (question.includes('defi platforms') || question.includes('decentralized finance')) {
-                    typeAnswer('Here are some top DeFi platforms to explore in 2025: Aave offers lending and borrowing with flash loans and high TVL (~$10B). Uniswap is a leading DEX for trading with automated market-making (~$4B TVL). Compound provides lending with dynamic interest rates. Lido Finance enables liquid staking for ETH and others (~$12B TVL). MakerDAO supports DAI stablecoin and governance. Check DeFiLlama for real-time data. Always research security and risks before investing.');[](https://www.debutinfotech.com/blog/best-defi-platforms)[](https://cryptonews.com/cryptocurrency/best-defi-platforms/)[](https://www.rapidinnovation.io/post/top-12-defi-platforms-to-look-out-for-comparison-guide)
-                } else {
-                    typeAnswer('Sorry, I don’t have an answer for that. Try asking about @GoKiteAI, DeFi platforms, or crypto topics like BTC price or ETH gas fees!');
-                }
-            }, delay);
+                typeAnswer('This is a demo response from QurixAI. Ask about crypto or Web3 to get started!');
+            }, 3000);
         });
 
         userInput.addEventListener('keypress', (e) => {
@@ -801,6 +700,77 @@
                 sendBtn.click();
             }
         });
+
+        imageUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                console.log('Image uploaded:', file.name);
+                addMessage(`Image uploaded: ${file.name}`, 'user-message');
+            }
+        });
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        menuIcon.addEventListener('click', () => {
+            dropdownContent.classList.toggle('active');
+        });
+
+        dropdownContent.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = link.getAttribute('data-action');
+                if (action === 'share') {
+                    alert('Share functionality not implemented. Copy the chat URL or screenshot to share.');
+                } else if (action === 'settings') {
+                    settingsModal.classList.add('active');
+                } else if (action === 'help') {
+                    alert('Help: Type your question in the input box. Use the sidebar to start a new chat or view old chats.');
+                }
+                dropdownContent.classList.remove('active');
+            });
+        });
+
+        darkModeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('light', !isDarkMode);
+            darkModeToggle.classList.toggle('active');
+        });
+
+        clearChats.addEventListener('click', () => {
+            chats = [];
+            currentChatId = null;
+            localStorage.removeItem('chats');
+            renderChats();
+            loadChat();
+            settingsModal.classList.remove('active');
+        });
+
+        aboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsModal.classList.remove('active');
+            aboutModal.classList.add('active');
+        });
+
+        closeAbout.addEventListener('click', () => {
+            aboutModal.classList.remove('active');
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('active');
+            }
+        });
+
+        aboutModal.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.classList.remove('active');
+            }
+        });
+
+        renderChats();
+        loadChat();
     </script>
 </body>
 </html>
