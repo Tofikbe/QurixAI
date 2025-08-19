@@ -163,7 +163,7 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-            margin-bottom: 120px; /* Space for fixed input */
+            margin-bottom: 120px;
         }
         .light .chatbot {
             background: rgba(245, 245, 255, 0.9);
@@ -426,7 +426,7 @@
             display: none;
             padding: 20px;
             margin-top: 60px;
-            margin-bottom: 120px; /* Space for fixed input */
+            margin-bottom: 120px;
         }
         .page.active {
             display: block;
@@ -494,10 +494,10 @@
             </div>
             <div class="chatbot">
                 <div class="chat-header">QurixAI - Your Crypto AI Assistant</div>
-                <div class="last-updated">Last Updated: 11:41 PM IST, Tuesday, August 19, 2025</div>
+                <div class="last-updated">Last Updated: 11:46 PM IST, Tuesday, August 19, 2025</div>
                 <div class="chat-body" id="chat-body">
                     <div class="message bot-message">
-                        <div class="message-text">Hey there! Ask me anything about crypto or @GoKiteAI! Use Fast or Normal mode, or unlock Expert mode for hand-to-hand replies.</div>
+                        <div class="message-text">Hey there! Ask me about crypto, DeFi platforms, or @GoKiteAI! Use Fast or Normal mode, or unlock Expert mode for hand-to-hand replies.</div>
                     </div>
                 </div>
             </div>
@@ -688,7 +688,6 @@
         });
 
         confirmPayment.addEventListener('click', () => {
-            // Simulate payment verification (replace with actual blockchain check in production)
             isExpertUnlocked = true;
             expertPopup.classList.remove('active');
             pages.forEach(page => {
@@ -789,8 +788,10 @@
                     typeAnswer('AI will respond here: Trending altcoins can be found on platforms like CoinGecko or Twitter trends.');
                 } else if (question.includes('stablecoins for yield')) {
                     typeAnswer('AI will respond here: Popular stablecoins for yield include USDC, USDT, and DAI on platforms like Aave or Compound.');
+                } else if (question.includes('defi platforms') || question.includes('decentralized finance')) {
+                    typeAnswer('Here are some top DeFi platforms to explore in 2025: Aave offers lending and borrowing with flash loans and high TVL (~$10B). Uniswap is a leading DEX for trading with automated market-making (~$4B TVL). Compound provides lending with dynamic interest rates. Lido Finance enables liquid staking for ETH and others (~$12B TVL). MakerDAO supports DAI stablecoin and governance. Check DeFiLlama for real-time data. Always research security and risks before investing.');[](https://www.debutinfotech.com/blog/best-defi-platforms)[](https://cryptonews.com/cryptocurrency/best-defi-platforms/)[](https://www.rapidinnovation.io/post/top-12-defi-platforms-to-look-out-for-comparison-guide)
                 } else {
-                    typeAnswer('Sorry, I don’t have an answer for that. Try asking about @GoKiteAI or crypto topics like BTC price or ETH gas fees!');
+                    typeAnswer('Sorry, I don’t have an answer for that. Try asking about @GoKiteAI, DeFi platforms, or crypto topics like BTC price or ETH gas fees!');
                 }
             }, delay);
         });
