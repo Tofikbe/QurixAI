@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QurixAI Chatbot</title>
+    <title>QurixAI - Crypto AI Chatbot</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <style>
@@ -14,31 +14,65 @@
             font-family: 'Inter', sans-serif;
         }
         body {
-            width: 100%;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background: linear-gradient(135deg, #0a0a23, #1a1a3e);
             color: #e0e0e0;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        body.light {
+            background: linear-gradient(135deg, #e0e0ff, #f5f5ff);
+            color: #1a1a3e;
         }
         .container {
             max-width: 100%;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 35, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .light .header {
+            background: rgba(245, 245, 255, 0.8);
         }
         .menu-btn {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1000;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 28px;
             color: #00d4ff;
             transition: transform 0.3s ease;
         }
+        .light .menu-btn {
+            color: #1a1a3e;
+        }
         .menu-btn:hover {
             transform: scale(1.1);
+        }
+        .toggle-mode {
+            cursor: pointer;
+            font-size: 24px;
+            color: #00d4ff;
+            transition: color 0.3s ease;
+        }
+        .light .toggle-mode {
+            color: #1a1a3e;
+        }
+        .toggle-mode:hover {
+            color: #ff00ff;
+        }
+        .light .toggle-mode:hover {
+            color: #ff00ff;
         }
         .menu {
             position: fixed;
@@ -51,6 +85,11 @@
             padding: 20px;
             transition: left 0.3s ease;
             z-index: 999;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .light .menu {
+            background: #f5f5ff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
         .menu.open {
             left: 0;
@@ -63,25 +102,83 @@
             margin: 20px 0;
             transition: color 0.2s ease;
         }
+        .light .menu a {
+            color: #1a1a3e;
+        }
         .menu a:hover {
-            color: #ffffff;
+            color: #ff00ff;
+        }
+        .light .menu a:hover {
+            color: #ff00ff;
+        }
+        .daily-questions {
+            margin-top: 60px;
+            margin-bottom: 20px;
+        }
+        .daily-questions h2 {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+        .light .daily-questions h2 {
+            color: #1a1a3e;
+            text-shadow: none;
+        }
+        .question-card {
+            background: rgba(10, 10, 35, 0.7);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+        .light .question-card {
+            background: rgba(245, 245, 255, 0.7);
+            border: 1px solid #1a1a3e;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .question-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        .light .question-card:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .question-card p {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+        .light .question-card p {
+            color: #1a1a3e;
         }
         .chatbot {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            background: #16213e;
+            background: rgba(10, 10, 35, 0.9);
             border-radius: 15px;
-            margin-top: 50px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        .light .chatbot {
+            background: rgba(245, 245, 255, 0.9);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
         .chat-header {
-            background: #00abb1;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
             padding: 15px;
             text-align: center;
             font-size: 1.2rem;
             font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+        .light .chat-header {
+            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
             color: #ffffff;
         }
         .chat-body {
@@ -89,6 +186,9 @@
             padding: 15px;
             overflow-y: auto;
             background: #1e2a44;
+        }
+        .light .chat-body {
+            background: #f5f5ff;
         }
         .message {
             margin-bottom: 15px;
@@ -112,23 +212,42 @@
             background: #00d4ff;
             color: #0f172a;
         }
+        .light .user-message .message-text {
+            background: #1a1a3e;
+            color: #ffffff;
+        }
         .bot-message .message-text {
             background: #2a3a5a;
             color: #e0e0e0;
+        }
+        .light .bot-message .message-text {
+            background: #e0e0ff;
+            color: #1a1a3e;
         }
         .thinking {
             color: #00d4ff;
             font-style: italic;
             animation: blink 1s infinite;
         }
+        .light .thinking {
+            color: #1a1a3e;
+        }
         @keyframes blink {
             50% { opacity: 0.5; }
         }
         .chat-input {
-            display: flex;
             padding: 10px;
-            background: #16213e;
-            border-top: 1px solid #2a3a5a;
+            background: rgba(10, 10, 35, 0.9);
+            border-top: 1px solid #00d4ff;
+        }
+        .light .chat-input {
+            background: rgba(245, 245, 255, 0.9);
+            border-top: 1px solid #1a1a3e;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
         #user-input {
             flex-grow: 1;
@@ -140,24 +259,63 @@
             outline: none;
             font-size: 0.9rem;
         }
+        .light #user-input {
+            background: #f5f5ff;
+            border: 1px solid #1a1a3e;
+            color: #1a1a3e;
+        }
         #send-btn {
             padding: 10px 15px;
             border: none;
-            background: #00d4ff;
-            color: #0f172a;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            color: #ffffff;
             border-radius: 20px;
             margin-left: 10px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .light #send-btn {
+            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
         }
         #send-btn:hover {
-            background: #00a3cc;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        .light #send-btn:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        .prompt-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .prompt-btn {
+            padding: 8px 15px;
+            border: 1px solid #00d4ff;
+            background: rgba(10, 10, 35, 0.7);
+            color: #00d4ff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .light .prompt-btn {
+            background: rgba(245, 245, 255, 0.7);
+            border: 1px solid #1a1a3e;
+            color: #1a1a3e;
+        }
+        .prompt-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+        .light .prompt-btn:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
         .page {
             display: none;
             padding: 20px;
-            height: 100vh;
-            background: #1a1a2e;
+            margin-top: 60px;
         }
         .page.active {
             display: block;
@@ -175,33 +333,68 @@
         }
         @media (max-width: 768px) {
             .chatbot {
-                margin-top: 60px;
+                margin-top: 10px;
             }
             .chat-body {
-                max-height: calc(100vh - 150px);
+                max-height: calc(100vh - 250px);
+            }
+            .daily-questions h2 {
+                font-size: 1.2rem;
+            }
+            .question-card p {
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <span class="menu-btn material-symbols-outlined">menu</span>
+        <div class="header">
+            <span class="menu-btn material-symbols-outlined">menu</span>
+            <span class="toggle-mode material-symbols-outlined">dark_mode</span>
+        </div>
         <div class="menu">
             <a href="#" data-page="chat">Chat</a>
             <a href="#" data-page="settings">Settings</a>
             <a href="#" data-page="about">About</a>
         </div>
         <div id="chat-page" class="page active">
+            <div class="daily-questions">
+                <h2>Daily Top Questions</h2>
+                <div class="question-card" data-question="What is the current BTC price today?">
+                    <p>What is the current BTC price today?</p>
+                </div>
+                <div class="question-card" data-question="Ethereum gas fee right now?">
+                    <p>Ethereum gas fee right now?</p>
+                </div>
+                <div class="question-card" data-question="Which altcoins are trending?">
+                    <p>Which altcoins are trending?</p>
+                </div>
+                <div class="question-card" data-question="Top gainers and losers in last 24h?">
+                    <p>Top gainers and losers in last 24h?</p>
+                </div>
+                <div class="question-card" data-question="Best stablecoins for yield?">
+                    <p>Best stablecoins for yield?</p>
+                </div>
+            </div>
             <div class="chatbot">
                 <div class="chat-header">QurixAI - Your Crypto AI Assistant</div>
                 <div class="chat-body" id="chat-body">
                     <div class="message bot-message">
-                        <div class="message-text">Hey there! Ask me anything about @GoKiteAI or crypto!</div>
+                        <div class="message-text">Hey there! Ask me anything about crypto or @GoKiteAI!</div>
                     </div>
                 </div>
                 <div class="chat-input">
-                    <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
-                    <button id="send-btn">Send</button>
+                    <div class="input-wrapper">
+                        <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+                        <button id="send-btn">Send</button>
+                    </div>
+                    <div class="prompt-buttons">
+                        <button class="prompt-btn" data-prompt="BTC price">BTC Price</button>
+                        <button class="prompt-btn" data-prompt="ETH gas fee">ETH Gas Fee</button>
+                        <button class="prompt-btn" data-prompt="Top gainers">Top Gainers</button>
+                        <button class="prompt-btn" data-prompt="Crypto news">Crypto News</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -324,10 +517,21 @@
         const menuBtn = document.querySelector('.menu-btn');
         const menu = document.querySelector('.menu');
         const menuLinks = document.querySelectorAll('.menu a');
+        const toggleMode = document.querySelector('.toggle-mode');
         const pages = document.querySelectorAll('.page');
         const chatBody = document.getElementById('chat-body');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
+        const promptButtons = document.querySelectorAll('.prompt-btn');
+        const questionCards = document.querySelectorAll('.question-card');
+
+        let isDarkMode = true;
+
+        toggleMode.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('light', !isDarkMode);
+            toggleMode.textContent = isDarkMode ? 'dark_mode' : 'light_mode';
+        });
 
         menuBtn.addEventListener('click', () => {
             menu.classList.toggle('open');
@@ -344,9 +548,23 @@
             });
         });
 
+        promptButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                userInput.value = btn.getAttribute('data-prompt');
+                sendBtn.click();
+            });
+        });
+
+        questionCards.forEach(card => {
+            card.addEventListener('click', () => {
+                userInput.value = card.getAttribute('data-question');
+                sendBtn.click();
+            });
+        });
+
         function addMessage(text, type) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
+            messageDiv.className = `message ${type} fade-in`;
             const messageText = document.createElement('div');
             messageText.className = 'message-text';
             messageText.textContent = text;
@@ -357,7 +575,7 @@
 
         function typeAnswer(text) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = 'message bot-message';
+            messageDiv.className = 'message bot-message fade-in';
             const messageText = document.createElement('div');
             messageText.className = 'message-text typing';
             messageDiv.appendChild(messageText);
@@ -398,8 +616,20 @@
                 const matched = questions.find(q => question.includes(q.q.toLowerCase()));
                 if (matched) {
                     typeAnswer(matched.a);
+                } else if (question.includes('btc price') || question.includes('bitcoin price')) {
+                    typeAnswer('AI will respond here: The current BTC price is not available in my data. Please check a live price feed like CoinGecko.');
+                } else if (question.includes('eth gas fee') || question.includes('ethereum gas fee')) {
+                    typeAnswer('AI will respond here: Current Ethereum gas fees can be checked on Etherscan or similar platforms.');
+                } else if (question.includes('top gainers')) {
+                    typeAnswer('AI will respond here: Top gainers and losers in the last 24 hours can be found on CoinMarketCap.');
+                } else if (question.includes('crypto news')) {
+                    typeAnswer('AI will respond here: For the latest crypto news, check sources like CoinDesk or CoinTelegraph.');
+                } else if (question.includes('altcoins trending')) {
+                    typeAnswer('AI will respond here: Trending altcoins can be found on platforms like CoinGecko or Twitter trends.');
+                } else if (question.includes('stablecoins for yield')) {
+                    typeAnswer('AI will respond here: Popular stablecoins for yield include USDC, USDT, and DAI on platforms like Aave or Compound.');
                 } else {
-                    typeAnswer("Sorry, I don't have an answer for that. Try asking about @GoKiteAI or crypto!");
+                    typeAnswer('Sorry, I don’t have an answer for that. Try asking about @GoKiteAI or crypto topics like BTC price or ETH gas fees!');
                 }
             }, Math.random() * 2000 + 2000);
         });
