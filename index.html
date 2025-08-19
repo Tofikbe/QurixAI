@@ -1,1 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QurixAI Chatbot</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 100%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .menu-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            cursor: pointer;
+            font-size: 24px;
+            color: #00d4ff;
+            transition: transform 0.3s ease;
+        }
+        .menu-btn:hover {
+            transform: scale(1.1);
+        }
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: #0f172a;
+            padding: 20px;
+            transition: left 0.3s ease;
+            z-index: 999;
+        }
+        .menu.open {
+            left: 0;
+        }
+        .menu a {
+            display: block;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 18px;
+            margin: 20px 0;
+            transition: color 0.2s ease;
+        }
+        .menu a:hover {
+            color: #ffffff;
+        }
+        .chatbot {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #16213e;
+            border-radius: 15px;
+            margin-top: 50px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .chat-header {
+            background: #00abb1;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .chat-body {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #1e2a44;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .user-message {
+            justify-content: flex-end;
+        }
+        .bot-message {
+            justify-content: flex-start;
+        }
+        .message-text {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .user-message .message-text {
+            background: #00d4ff;
+            color: #0f172a;
+        }
+        .bot-message .message-text {
+            background: #2a3a5a;
+            color: #e0e0e0;
+        }
+        .thinking {
+            color: #00d4ff;
+            font-style: italic;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: #16213e;
+            border-top: 1px solid #2a3a5a;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #00d4ff;
+            border-radius: 20px;
+            background: #1e2a44;
+            color: #e0e0e0;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        #send-btn {
+            padding: 10px 15px;
+            border: none;
+            background: #00d4ff;
+            color: #0f172a;
+            border-radius: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        #send-btn:hover {
+            background: #00a3cc;
+        }
+        .page {
+            display: none;
+            padding: 20px;
+            height: 100vh;
+            background: #1a1a2e;
+        }
+        .page.active {
+            display: block;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing::after {
+            content: "|";
+            animation: blink 0.75s step-end infinite;
+        }
+        @media (max-width: 768px) {
+            .chatbot {
+                margin-top: 60px;
+            }
+            .chat-body {
+                max-height: calc(100vh - 150px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="menu-btn material-symbols-outlined">menu</span>
+        <div class="menu">
+            <a href="#" data-page="chat">Chat</a>
+            <a href="#" data-page="settings">Settings</a>
+            <a href="#" data-page="about">About</a>
+        </div>
+        <div id="chat-page" class="page active">
+            <div class="chatbot">
+                <div class="chat-header">QurixAI - Your Crypto AI Assistant</div>
+                <div class="chat-body" id="chat-body">
+                    <div class="message bot-message">
+                        <div class="message-text">Hey there! Ask me anything about @GoKiteAI or crypto!</div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+                    <button id="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+        <div id="settings-page" class="page">
+            <h2>Settings</h2>
+            <p>Coming Soon</p>
+        </div>
+        <div id="about-page" class="page">
+            <h2>About QurixAI</h2>
+            <p>QurixAI is an advanced AI-powered platform built exclusively for the world of crypto and Web3. Our vision is to transform the way users interact with digital assets by combining the speed of artificial intelligence with the transparency of blockchain. Whether it’s generating real-time trading insights, building automated strategies, or simplifying complex on-chain data, QurixAI is designed to give every user a smarter edge in the market.</p>
+            <p>We believe that navigating crypto shouldn’t be complicated. That’s why QurixAI focuses on making tools that are not only powerful but also user-friendly, allowing both beginners and professionals to benefit. From identifying hidden market opportunities to providing predictive analytics, our platform ensures users can trade, invest, and manage their portfolios with confidence.</p>
+            <p>In a rapidly evolving industry, QurixAI stands for innovation, trust, and accessibility. By bridging AI and blockchain, we aim to build a future where intelligence drives every decision — and where crypto becomes easier, faster, and more reliable for everyone.</p>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            { q: "What is @GoKiteAI?", a: "@GoKiteAI is an innovative ecosystem that connects autonomous AI modules with built-in identity, payments, and governance, enabling seamless, trustless interactions across data, compute, and AI services in the Web3 space." },
+            { q: "How does @GoKiteAI work?", a: "It integrates AI agents with blockchain technology, allowing autonomous modules to handle tasks like data processing, payments, and governance, creating a decentralized and efficient network." },
+            { q: "What is the InfraBUIDL (AI) program?", a: "InfraBUIDL (AI) is a $15M grant program by @AvalancheFDN, where @GoKiteAI serves as a joint selection committee member to fund innovative AI-driven Web3 projects." },
+            { q: "Who funds @GoKiteAI's ecosystem?", a: "Projects like @codatta_io in the @GoKiteAI ecosystem received funding through the InfraBUIDL (AI) initiative by @AvalancheFDN." },
+            { q: "What is @codatta_io?", a: "@codatta_io ($XNY) is a project incubated by @GoKiteAI, focusing on decentralized data solutions within the Kite AI ecosystem." },
+            { q: "What are the benefits of @GoKiteAI?", a: "It offers trustless interactions, scalable AI solutions, and seamless integration of data and compute services for Web3 applications." },
+            { q: "How does @GoKiteAI support developers?", a: "It provides funding, infrastructure, and tools through programs like InfraBUIDL (AI) to help developers build AI-driven Web3 projects." },
+            { q: "What is the role of AI in @GoKiteAI?", a: "AI powers autonomous modules for tasks like data analysis, predictive modeling, and automated decision-making in the Web3 ecosystem." },
+            { q: "Is @GoKiteAI decentralized?", a: "Yes, it leverages blockchain to ensure decentralized, trustless operations across its AI modules." },
+            { q: "What makes @GoKiteAI unique?", a: "Its combination of AI and blockchain enables autonomous, scalable, and secure interactions tailored for Web3." },
+            { q: "How does @GoKiteAI handle payments?", a: "Payments are managed through integrated blockchain-based systems, ensuring transparency and security." },
+            { q: "Can @GoKiteAI be used for trading?", a: "Yes, its AI modules can generate real-time trading insights and automate strategies for crypto markets." },
+            { q: "What is the vision of @GoKiteAI?", a: "To create a seamless, AI-driven, decentralized internet for data, compute, and services in Web3." },
+            { q: "How does @GoKiteAI ensure trust?", a: "By using blockchain for transparent and verifiable transactions and interactions." },
+            { q: "What is the $XNY token?", a: "$XNY is the native token of @codatta_io, a project within the @GoKiteAI ecosystem." },
+            { q: "How can I join @GoKiteAI's ecosystem?", a: "Developers can apply for funding or collaborate through programs like InfraBUIDL (AI)." },
+            { q: "Does @GoKiteAI support NFTs?", a: "Yes, it can integrate with NFT platforms for data and asset management." },
+            { q: "What blockchains does @GoKiteAI support?", a: "It primarily aligns with @AvalancheFDN but can integrate with other blockchains." },
+            { q: "How secure is @GoKiteAI?", a: "It uses blockchain's immutability and cryptographic security to ensure safe operations." },
+            { q: "Can @GoKiteAI predict market trends?", a: "Its AI modules can analyze data to provide predictive analytics for market trends." },
+            { q: "What industries does @GoKiteAI target?", a: "Primarily crypto, Web3, DeFi, and data-driven industries." },
+            { q: "How does @GoKiteAI handle data?", a: "It processes on-chain and off-chain data using AI for actionable insights." },
+            { q: "Is @GoKiteAI open-source?", a: "Certain components may be open-source, depending on the project within its ecosystem." },
+            { q: "What is the role of @AvalancheFDN in @GoKiteAI?", a: "It provides funding and support through initiatives like InfraBUIDL (AI)." },
+            { q: "Can @GoKiteAI automate strategies?", a: "Yes, it supports automated trading and decision-making strategies." },
+            { q: "How does @GoKiteAI improve user experience?", a: "By offering intuitive AI tools and seamless blockchain integration." },
+            { q: "What is the Kite AI architecture?", a: "A modular system connecting AI agents with blockchain for decentralized operations." },
+            { q: "Does @GoKiteAI have a governance model?", a: "Yes, it includes built-in governance for trustless coordination." },
+            { q: "How fast is @GoKiteAI?", a: "It leverages high-speed blockchain and AI for near-instant responses." },
+            { q: "Can beginners use @GoKiteAI?", a: "Yes, its tools are designed to be user-friendly for all levels." },
+            { q: "What is the role of $XNY in @GoKiteAI?", a: "It powers transactions and services within the @codatta_io project." },
+            { q: "How does @GoKiteAI handle scalability?", a: "Its modular architecture ensures scalability for large-scale applications." },
+            { q: "Can @GoKiteAI integrate with DeFi?", a: "Yes, it supports DeFi protocols for lending, staking, and more." },
+            { q: "What is the future of @GoKiteAI?", a: "To lead AI-driven innovation in the Web3 space." },
+            { q: "How does @GoKiteAI ensure privacy?", a: "It uses blockchain encryption and secure data handling." },
+            { q: "Can @GoKiteAI be used for analytics?", a: "Yes, it provides predictive and real-time analytics for crypto markets." },
+            { q: "What is the @GoKiteAI ecosystem?", a: "A network of AI modules, blockchain, and projects like @codatta_io." },
+            { q: "How does @GoKiteAI support startups?", a: "Through funding and incubation programs like InfraBUIDL (AI)." },
+            { q: "Is @GoKiteAI community-driven?", a: "Yes, it encourages community participation and development." },
+            { q: "What are @GoKiteAI's key features?", a: "AI automation, blockchain integration, and modular design." },
+            { q: "Can @GoKiteAI handle large datasets?", a: "Yes, its AI is optimized for big data processing." },
+            { q: "How does @GoKiteAI compare to other AI platforms?", a: "It’s unique in combining AI with Web3 and blockchain." },
+            { q: "What is the @GoKiteAI incubation program?", a: "A program to support and fund innovative Web3 projects." },
+            { q: "Can @GoKiteAI be used for staking?", a: "Yes, it supports staking through DeFi integrations." },
+            { q: "How does @GoKiteAI handle transactions?", a: "Through secure, blockchain-based payment systems." },
+            { q: "What is the role of AI agents in @GoKiteAI?", a: "They automate tasks like trading, data analysis, and governance." },
+            { q: "Is @GoKiteAI suitable for enterprises?", a: "Yes, it offers scalable solutions for enterprise use." },
+            { q: "How does @GoKiteAI ensure transparency?", a: "By leveraging blockchain for verifiable records." },
+            { q: "Can @GoKiteAI integrate with wallets?", a: "Yes, it supports wallet connections for seamless transactions." },
+            { q: "What is the @GoKiteAI funding model?", a: "It includes grants and token-based incentives." },
+            { q: "How does @GoKiteAI handle security audits?", a: "It follows strict blockchain security protocols." },
+            { q: "Can @GoKiteAI predict crypto prices?", a: "It provides predictive analytics but cannot guarantee prices." },
+            { q: "What is the @GoKiteAI community?", a: "A group of developers, users, and projects building on its ecosystem." },
+            { q: "How does @GoKiteAI support DeFi projects?", a: "By providing AI tools and funding for DeFi innovation." },
+            { q: "Is @GoKiteAI mobile-friendly?", a: "Yes, its tools are optimized for mobile devices." },
+            { q: "What is the @GoKiteAI token?", a: "It may include tokens like $XNY for ecosystem transactions." },
+            { q: "How does @GoKiteAI handle governance disputes?", a: "Through decentralized governance protocols." },
+            { q: "Can @GoKiteAI be used for portfolio management?", a: "Yes, it offers tools for portfolio tracking and optimization." },
+            { q: "What is the @GoKiteAI roadmap?", a: "It focuses on expanding AI and Web3 integrations." },
+            { q: "How does @GoKiteAI ensure low fees?", a: "By leveraging efficient blockchain networks." },
+            { q: "Can @GoKiteAI support cross-chain operations?", a: "Yes, it can integrate with multiple blockchains." },
+            { q: "What is the @GoKiteAI developer community?", a: "A network of developers building on its platform." },
+            { q: "How does @GoKiteAI handle user feedback?", a: "It incorporates feedback for continuous improvement." },
+            { q: "Can @GoKiteAI be used for smart contracts?", a: "Yes, it supports smart contract interactions." },
+            { q: "What is the @GoKiteAI API?", a: "An interface for developers to integrate with its ecosystem." },
+            { q: "How does @GoKiteAI ensure data integrity?", a: "Through blockchain’s immutable ledger." },
+            { q: "Can @GoKiteAI be used for market analysis?", a: "Yes, it provides real-time market insights." },
+            { q: "What is the @GoKiteAI infrastructure?", a: "A combination of AI modules and blockchain networks." },
+            { q: "How does @GoKiteAI support tokenization?", a: "It enables token creation and management." },
+            { q: "Can @GoKiteAI integrate with exchanges?", a: "Yes, it supports exchange API integrations." },
+            { q: "What is the @GoKiteAI user base?", a: "Developers, traders, and Web3 enthusiasts." },
+            { q: "How does @GoKiteAI handle updates?", a: "Through community-driven and modular upgrades." },
+            { q: "Can @GoKiteAI be used for lending?", a: "Yes, through DeFi protocol integrations." },
+            { q: "What is the @GoKiteAI mission?", a: "To drive AI-powered innovation in Web3." },
+            { q: "How does @GoKiteAI ensure accessibility?", a: "By offering user-friendly tools for all levels." },
+            { q: "Can @GoKiteAI support real-time trading?", a: "Yes, it provides real-time trading insights." },
+            { q: "What is the @GoKiteAI technology stack?", a: "AI, blockchain, and modular architecture." },
+            { q: "How does @GoKiteAI handle compliance?", a: "It adheres to blockchain and regulatory standards." },
+            { q: "Can @GoKiteAI be used for data storage?", a: "Yes, through decentralized storage solutions." },
+            { q: "What is the @GoKiteAI ecosystem growth?", a: "It’s expanding through partnerships and funding." },
+            { q: "How does @GoKiteAI support innovation?", a: "By funding and incubating new projects." },
+            { q: "Can @GoKiteAI be used for governance?", a: "Yes, it includes decentralized governance tools." },
+            { q: "What is the @GoKiteAI market focus?", a: "Crypto, DeFi, and Web3 markets." },
+            { q: "How does @GoKiteAI handle latency?", a: "By using high-speed blockchain and AI processing." },
+            { q: "Can @GoKiteAI support AI research?", a: "Yes, it provides tools for AI development." },
+            { q: "What is the @GoKiteAI user interface?", a: "A clean, intuitive, and mobile-friendly UI." },
+            { q: "How does @GoKiteAI ensure reliability?", a: "Through robust blockchain and AI systems." },
+            { q: "Can @GoKiteAI be used for voting?", a: "Yes, through decentralized governance mechanisms." },
+            { q: "What is the @GoKiteAI funding process?", a: "It involves grants and community-driven funding." },
+            { q: "How does @GoKiteAI handle scalability issues?", a: "Through modular and decentralized architecture." },
+            { q: "Can @GoKiteAI support AI trading bots?", a: "Yes, it enables automated trading bots." },
+            { q: "What is the @GoKiteAI security model?", a: "It uses blockchain encryption and audits." },
+            { q: "How does @GoKiteAI handle user data?", a: "Securely, with blockchain-based privacy." },
+            { q: "Can @GoKiteAI integrate with DAOs?", a: "Yes, it supports DAO governance and operations." },
+            { q: "What is the @GoKiteAI development process?", a: "Iterative, community-driven, and modular." },
+            { q: "How does @GoKiteAI ensure user trust?", a: "Through transparency and blockchain verification." },
+            { q: "Can @GoKiteAI be used for NFT trading?", a: "Yes, it supports NFT market integrations." },
+            { q: "What is the @GoKiteAI adoption rate?", a: "Growing rapidly within the Web3 community." },
+            { q: "How does @GoKiteAI handle errors?", a: "Through robust error-handling in AI and blockchain." },
+            { q: "Can @GoKiteAI support cross-platform apps?", a: "Yes, it’s compatible with web and mobile." },
+            { q: "What is the @GoKiteAI long-term goal?", a: "To revolutionize Web3 with AI-driven solutions." }
+        ];
 
+        const menuBtn = document.querySelector('.menu-btn');
+        const menu = document.querySelector('.menu');
+        const menuLinks = document.querySelectorAll('.menu a');
+        const pages = document.querySelectorAll('.page');
+        const chatBody = document.getElementById('chat-body');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        menuBtn.addEventListener('click', () => {
+            menu.classList.toggle('open');
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                pages.forEach(page => {
+                    page.classList.toggle('active', page.id === `${pageId}-page`);
+                });
+                menu.classList.remove('open');
+            });
+        });
+
+        function addMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text';
+            messageText.textContent = text;
+            messageDiv.appendChild(messageText);
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function typeAnswer(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot-message';
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text typing';
+            messageDiv.appendChild(messageText);
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            const words = text.split(' ');
+            let i = 0;
+            messageText.textContent = '';
+            const interval = setInterval(() => {
+                if (i < words.length) {
+                    messageText.textContent += (i === 0 ? '' : ' ') + words[i];
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    messageText.classList.remove('typing');
+                }
+            }, 100);
+        }
+
+        sendBtn.addEventListener('click', () => {
+            const question = userInput.value.trim().toLowerCase();
+            if (!question) return;
+            addMessage(question, 'user-message');
+            userInput.value = '';
+
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message bot-message';
+            const thinkingText = document.createElement('div');
+            thinkingText.className = 'message-text thinking';
+            thinkingText.textContent = 'QurixAI is thinking...';
+            thinkingDiv.appendChild(thinkingText);
+            chatBody.appendChild(thinkingDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                chatBody.removeChild(thinkingDiv);
+                const matched = questions.find(q => question.includes(q.q.toLowerCase()));
+                if (matched) {
+                    typeAnswer(matched.a);
+                } else {
+                    typeAnswer("Sorry, I don't have an answer for that. Try asking about @GoKiteAI or crypto!");
+                }
+            }, Math.random() * 2000 + 2000);
+        });
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
