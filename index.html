@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QurixAI - Professional AI Chat</title>
+    <title>QurixAI - RBSE AI Tutor</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <style>
@@ -15,14 +15,14 @@
         }
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0a0a23, #1a1a3e);
+            background: linear-gradient(135deg, #1e3a8a, #6b21a8);
             color: #e0e0e0;
             display: flex;
             transition: background 0.3s ease, color 0.3s ease;
         }
         body.light {
-            background: linear-gradient(135deg, #e0e0ff, #f5f5ff);
-            color: #1a1a3e;
+            background: linear-gradient(135deg, #e0e7ff, #f3e8ff);
+            color: #1e1e2e;
         }
         .container {
             display: flex;
@@ -31,16 +31,16 @@
         }
         .sidebar {
             width: 250px;
-            background: rgba(10, 10, 35, 0.9);
+            background: rgba(30, 30, 46, 0.9);
             padding: 20px;
             overflow-y: auto;
             transition: transform 0.3s ease;
-            border-right: 1px solid #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            border-right: 1px solid #60a5fa;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
         }
         .light .sidebar {
-            background: rgba(245, 245, 255, 0.9);
-            border-right: 1px solid #1a1a3e;
+            background: rgba(243, 244, 246, 0.9);
+            border-right: 1px solid #1e1e2e;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
         .sidebar.hidden {
@@ -54,21 +54,21 @@
             top: 10px;
             left: 10px;
             font-size: 28px;
-            color: #00d4ff;
+            color: #60a5fa;
             cursor: pointer;
             z-index: 1002;
             transition: transform 0.3s ease;
         }
         .light .menu-btn {
-            color: #1a1a3e;
+            color: #1e1e2e;
         }
         .menu-btn:hover {
             transform: scale(1.1);
         }
-        .new-chat-btn {
+        .new-chat-btn, .resources-btn {
             display: block;
             padding: 10px;
-            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            background: linear-gradient(90deg, #60a5fa, #a855f7);
             color: #ffffff;
             text-align: center;
             border-radius: 10px;
@@ -77,14 +77,14 @@
             margin-bottom: 20px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .light .new-chat-btn {
-            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+        .light .new-chat-btn, .light .resources-btn {
+            background: linear-gradient(90deg, #1e1e2e, #a855f7);
         }
-        .new-chat-btn:hover {
+        .new-chat-btn:hover, .resources-btn:hover {
             transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
         }
-        .light .new-chat-btn:hover {
+        .light .new-chat-btn:hover, .light .resources-btn:hover {
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         }
         .chat-list {
@@ -103,7 +103,7 @@
             background: rgba(0, 0, 0, 0.1);
         }
         .chat-list li:hover {
-            background: rgba(0, 212, 255, 0.3);
+            background: rgba(96, 165, 250, 0.3);
         }
         .light .chat-list li:hover {
             background: rgba(0, 0, 0, 0.2);
@@ -112,33 +112,36 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding-bottom: 120px;
+            padding-bottom: 150px;
         }
-        .chat-area {
+        .page {
+            display: none;
             flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(10, 10, 35, 0.9);
+            background: rgba(30, 30, 46, 0.9);
             border-radius: 15px;
             margin: 10px;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
         }
-        .light .chat-area {
-            background: rgba(245, 245, 255, 0.9);
+        .light .page {
+            background: rgba(243, 244, 246, 0.9);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .page.active {
+            display: flex;
+            flex-direction: column;
         }
         .chat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            background: linear-gradient(90deg, #60a5fa, #a855f7);
             color: #ffffff;
             border-radius: 15px 15px 0 0;
-            text-shadow: 0 0 10px #00d4ff;
+            text-shadow: 0 0 10px #60a5fa;
         }
         .light .chat-header {
-            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+            background: linear-gradient(90deg, #1e1e2e, #a855f7);
         }
         .chat-header h2 {
             font-size: 1.2rem;
@@ -156,15 +159,15 @@
             display: none;
             position: absolute;
             right: 0;
-            background: rgba(10, 10, 35, 0.9);
-            border: 1px solid #00d4ff;
+            background: rgba(30, 30, 46, 0.9);
+            border: 1px solid #60a5fa;
             border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
             z-index: 1000;
         }
         .light .dropdown-content {
-            background: rgba(245, 245, 255, 0.9);
-            border: 1px solid #1a1a3e;
+            background: rgba(243, 244, 246, 0.9);
+            border: 1px solid #1e1e2e;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
         .dropdown-content.active {
@@ -173,16 +176,16 @@
         .dropdown-content a {
             display: block;
             padding: 10px 15px;
-            color: #00d4ff;
+            color: #60a5fa;
             text-decoration: none;
             font-size: 0.85rem;
             transition: background 0.2s ease;
         }
         .light .dropdown-content a {
-            color: #1a1a3e;
+            color: #1e1e2e;
         }
         .dropdown-content a:hover {
-            background: rgba(0, 212, 255, 0.3);
+            background: rgba(96, 165, 250, 0.3);
         }
         .light .dropdown-content a:hover {
             background: rgba(0, 0, 0, 0.2);
@@ -191,11 +194,11 @@
             flex-grow: 1;
             padding: 15px;
             overflow-y: auto;
-            background: #1e2a44;
+            background: #374151;
             border-radius: 0 0 15px 15px;
         }
         .light .chat-body {
-            background: #f5f5ff;
+            background: #f3f4f6;
         }
         .message {
             display: flex;
@@ -220,36 +223,36 @@
             line-height: 1.4;
         }
         .user-message .message-text {
-            background: #00d4ff;
-            color: #0f172a;
+            background: #60a5fa;
+            color: #1e1e2e;
         }
         .light .user-message .message-text {
-            background: #1a1a3e;
+            background: #1e1e2e;
             color: #ffffff;
         }
         .bot-message .message-text {
-            background: #2a3a5a;
+            background: #4b5563;
             color: #e0e0e0;
         }
         .light .bot-message .message-text {
-            background: #e0e0ff;
-            color: #1a1a3e;
+            background: #d1d5db;
+            color: #1e1e2e;
         }
         .timestamp {
             font-size: 0.7rem;
-            color: #a0a0a0;
+            color: #9ca3af;
             margin-top: 5px;
         }
         .light .timestamp {
-            color: #606060;
+            color: #4b5563;
         }
         .thinking {
-            color: #00d4ff;
+            color: #60a5fa;
             font-style: italic;
             animation: blink 1s infinite;
         }
         .light .thinking {
-            color: #1a1a3e;
+            color: #1e1e2e;
         }
         @keyframes blink {
             50% { opacity: 0.5; }
@@ -260,13 +263,13 @@
             left: 0;
             right: 0;
             padding: 10px;
-            background: rgba(10, 10, 35, 0.9);
-            border-top: 1px solid #00d4ff;
+            background: rgba(30, 30, 46, 0.9);
+            border-top: 1px solid #60a5fa;
             z-index: 1000;
         }
         .light .chat-input {
-            background: rgba(245, 245, 255, 0.9);
-            border-top: 1px solid #1a1a3e;
+            background: rgba(243, 244, 246, 0.9);
+            border-top: 1px solid #1e1e2e;
         }
         .input-wrapper {
             display: flex;
@@ -277,30 +280,30 @@
         #user-input {
             flex-grow: 1;
             padding: 10px;
-            border: 1px solid #00d4ff;
+            border: 1px solid #60a5fa;
             border-radius: 20px;
-            background: #1e2a44;
+            background: #374151;
             color: #e0e0e0;
             outline: none;
             font-size: 0.9rem;
         }
         .light #user-input {
-            background: #f5f5ff;
-            border: 1px solid #1a1a3e;
-            color: #1a1a3e;
+            background: #f3f4f6;
+            border: 1px solid #1e1e2e;
+            color: #1e1e2e;
         }
         #image-upload {
             padding: 10px;
             border: none;
             background: transparent;
-            color: #00d4ff;
+            color: #60a5fa;
             font-size: 24px;
             cursor: pointer;
             margin-right: 10px;
             transition: transform 0.2s ease;
         }
         .light #image-upload {
-            color: #1a1a3e;
+            color: #1e1e2e;
         }
         #image-upload:hover {
             transform: scale(1.1);
@@ -308,18 +311,18 @@
         #send-btn {
             padding: 10px 15px;
             border: none;
-            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            background: linear-gradient(90deg, #60a5fa, #a855f7);
             color: #ffffff;
             border-radius: 20px;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .light #send-btn {
-            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+            background: linear-gradient(90deg, #1e1e2e, #a855f7);
         }
         #send-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
         }
         .light #send-btn:hover {
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -341,28 +344,28 @@
             display: flex;
         }
         .settings-content {
-            background: rgba(10, 10, 35, 0.9);
-            border: 1px solid #00d4ff;
+            background: rgba(30, 30, 46, 0.9);
+            border: 1px solid #60a5fa;
             border-radius: 15px;
             padding: 20px;
             max-width: 400px;
             width: 90%;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
             animation: fadeIn 0.3s ease-in;
         }
         .light .settings-content {
-            background: rgba(245, 245, 255, 0.9);
-            border: 1px solid #1a1a3e;
+            background: rgba(243, 244, 246, 0.9);
+            border: 1px solid #1e1e2e;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
         .settings-content h2 {
             font-size: 1.2rem;
-            color: #00d4ff;
+            color: #60a5fa;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px #00d4ff;
+            text-shadow: 0 0 10px #60a5fa;
         }
         .light .settings-content h2 {
-            color: #1a1a3e;
+            color: #1e1e2e;
             text-shadow: none;
         }
         .settings-item {
@@ -380,7 +383,7 @@
         .settings-item button, .settings-item a {
             padding: 8px 15px;
             border: none;
-            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            background: linear-gradient(90deg, #60a5fa, #a855f7);
             color: #ffffff;
             border-radius: 20px;
             cursor: pointer;
@@ -389,11 +392,11 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .light .settings-item button, .light .settings-item a {
-            background: linear-gradient(90deg, #1a1a3e, #ff00ff);
+            background: linear-gradient(90deg, #1e1e2e, #a855f7);
         }
         .settings-item button:hover, .settings-item a:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
         }
         .light .settings-item button:hover, .light .settings-item a:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -402,29 +405,89 @@
             position: relative;
             width: 50px;
             height: 24px;
-            background: #2a3a5a;
+            background: #4b5563;
             border-radius: 12px;
             cursor: pointer;
         }
         .light .toggle-switch {
-            background: #e0e0ff;
+            background: #d1d5db;
         }
         .toggle-switch::before {
             content: '';
             position: absolute;
             width: 20px;
             height: 20px;
-            background: #00d4ff;
+            background: #60a5fa;
             border-radius: 50%;
             top: 2px;
             left: 2px;
             transition: transform 0.2s ease;
         }
         .light .toggle-switch::before {
-            background: #1a1a3e;
+            background: #1e1e2e;
         }
         .toggle-switch.active::before {
             transform: translateX(26px);
+        }
+        .resources-page {
+            padding: 20px;
+        }
+        .resources-page h2 {
+            font-size: 1.5rem;
+            color: #60a5fa;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #60a5fa;
+        }
+        .light .resources-page h2 {
+            color: #1e1e2e;
+            text-shadow: none;
+        }
+        .resource-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .light .resource-item {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .resource-item a, .resource-item button {
+            display: inline-block;
+            padding: 8px 15px;
+            background: linear-gradient(90deg, #60a5fa, #a855f7);
+            color: #ffffff;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .light .resource-item a, .light .resource-item button {
+            background: linear-gradient(90deg, #1e1e2e, #a855f7);
+        }
+        .resource-item a:hover, .resource-item button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+        }
+        .light .resource-item a:hover, .light .resource-item button:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .footer {
+            position: fixed;
+            bottom: 120px;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: rgba(30, 30, 46, 0.9);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #60a5fa;
+            border-top: 1px solid #60a5fa;
+        }
+        .light .footer {
+            background: rgba(243, 244, 246, 0.9);
+            color: #1e1e2e;
+            border-top: 1px solid #1e1e2e;
         }
         .fade-in {
             animation: fadeIn 0.5s ease-in;
@@ -455,7 +518,7 @@
                 margin-left: 0;
             }
             .chat-body {
-                max-height: calc(100vh - 200px);
+                max-height: calc(100vh - 230px);
             }
             .settings-content {
                 width: 95%;
@@ -468,27 +531,60 @@
         <span class="menu-btn material-symbols-outlined">menu</span>
         <div class="sidebar">
             <a href="#" class="new-chat-btn" id="new-chat-btn">New Chat</a>
+            <a href="#" class="resources-btn" id="resources-btn">Student Resources</a>
             <ul class="chat-list" id="chat-list"></ul>
         </div>
         <div class="main">
-            <div class="chat-area">
-                <div class="chat-header">
-                    <h2>QurixAI - Your Crypto AI Assistant</h2>
-                    <div class="dropdown">
-                        <span class="menu-icon material-symbols-outlined">more_vert</span>
-                        <div class="dropdown-content" id="dropdown-content">
-                            <a href="#" data-action="share">Share this chat</a>
-                            <a href="#" data-action="settings">Settings</a>
-                            <a href="#" data-action="help">Help</a>
+            <div id="chat-page" class="page active">
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <h2>QurixAI - RBSE AI Tutor</h2>
+                        <div class="dropdown">
+                            <span class="menu-icon material-symbols-outlined">more_vert</span>
+                            <div class="dropdown-content" id="dropdown-content">
+                                <a href="#" data-action="share">Share this chat</a>
+                                <a href="#" data-action="settings">Settings</a>
+                                <a href="#" data-action="help">Help</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-body" id="chat-body">
+                        <div class="message bot-message">
+                            <div class="message-content">
+                                <div class="message-text">Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.</div>
+                                <div class="timestamp">11:21 PM IST, Wed, Aug 20, 2025</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="chat-body" id="chat-body">
-                    <div class="message bot-message">
-                        <div class="message-content">
-                            <div class="message-text">Hey there! Ask me anything about crypto or Web3!</div>
-                            <div class="timestamp">11:09 PM IST, Wed, Aug 20, 2025</div>
-                        </div>
+            </div>
+            <div id="resources-page" class="page">
+                <div class="resources-page">
+                    <h2>Student Resources</h2>
+                    <div class="resource-item">
+                        <p>RBSE Syllabus for Class 10 & 12</p>
+                        <a href="https://rajeduboard.rajasthan.gov.in/syllabus.htm" target="_blank">Download Syllabus PDFs</a>
+                    </div>
+                    <div class="resource-item">
+                        <p>RBSE Textbooks for Class 10 & 12</p>
+                        <a href="https://rajeduboard.rajasthan.gov.in/books/index.htm" target="_blank">Download Textbook PDFs</a>
+                    </div>
+                    <div class="resource-item">
+                        <p>Mock Tests & Previous Year Papers</p>
+                        <a href="https://rajeduboard.rajasthan.gov.in/previous-year-papers.htm" target="_blank">Access Mock Tests</a>
+                    </div>
+                    <div class="resource-item">
+                        <p>Check RBSE Class 10 & 12 Results (Min. 33% in theory + practical required)</p>
+                        <a href="https://rajresults.nic.in" target="_blank">Check Results</a>
+                    </div>
+                    <div class="resource-item">
+                        <p>Guidance to Fill RBSE Application Form</p>
+                        <a href="https://rajeduboard.rajasthan.gov.in/application-form.htm" target="_blank">View Guidance</a>
+                    </div>
+                    <div class="resource-item">
+                        <p>Career Guidance & Scholarships</p>
+                        <a href="https://cg.rajasthan.gov.in" target="_blank">Career Guidance Portal</a>
+                        <a href="https://sje.rajasthan.gov.in/scholarships" target="_blank">Scholarship Schemes</a>
                     </div>
                 </div>
             </div>
@@ -498,9 +594,12 @@
                         <span class="material-symbols-outlined" id="image-upload">image</span>
                     </label>
                     <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
-                    <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+                    <input type="text" id="user-input" placeholder="Ask about RBSE syllabus, exams, or resources..." autocomplete="off">
                     <button id="send-btn">Send</button>
                 </div>
+            </div>
+            <div class="footer">
+                <p>Class 10 Result: May 28, 2025 | Class 12 Result: May 22, 2025 | Passing Marks: Minimum 33% in theory + practical required</p>
             </div>
         </div>
         <div class="settings-modal" id="settings-modal">
@@ -515,21 +614,25 @@
                     <button id="clear-chats">Clear</button>
                 </div>
                 <div class="settings-item">
-                    <span>Account/Profile</span>
+                    <span>Profile</span>
                     <button disabled>Coming Soon</button>
                 </div>
                 <div class="settings-item">
-                    <span>About QurixAI</span>
+                    <span>About RBSE AI Tutor</span>
                     <a href="#" id="about-link">View</a>
+                </div>
+                <div class="settings-item">
+                    <span>RBSE Settings</span>
+                    <button disabled>Coming Soon</button>
                 </div>
             </div>
         </div>
         <div class="settings-modal" id="about-modal">
             <div class="settings-content">
-                <h2>About QurixAI</h2>
-                <p>QurixAI is an advanced AI-powered platform built exclusively for the world of crypto and Web3. Our vision is to transform the way users interact with digital assets by combining the speed of artificial intelligence with the transparency of blockchain. Whether it’s generating real-time trading insights, building automated strategies, or simplifying complex on-chain data, QurixAI is designed to give every user a smarter edge in the market.</p>
-                <p>We believe that navigating crypto shouldn’t be complicated. That’s why QurixAI focuses on making tools that are not only powerful but also user-friendly, allowing both beginners and professionals to benefit. From identifying hidden market opportunities to providing predictive analytics, our platform ensures users can trade, invest, and manage their portfolios with confidence.</p>
-                <p>In a rapidly evolving industry, QurixAI stands for innovation, trust, and accessibility. By bridging AI and blockchain, we aim to build a future where intelligence drives every decision — and where crypto becomes easier, faster, and more reliable for everyone.</p>
+                <h2>About RBSE AI Tutor</h2>
+                <p>QurixAI is your dedicated AI-powered tutor for RBSE Class 10 and 12 students. Our mission is to simplify learning by providing instant answers to syllabus-related questions, exam tips, and access to essential resources like textbooks, syllabus PDFs, and mock tests. Whether you're preparing for exams or planning your career, we’re here to help.</p>
+                <p>We aim to make studying accessible and engaging, offering tools that are easy to use for all students. From solving math problems to explaining science concepts, QurixAI supports you every step of the way, ensuring you achieve your academic goals with confidence.</p>
+                <p>In the dynamic world of education, QurixAI stands for clarity, support, and innovation. We’re committed to empowering RBSE students to excel in their exams and beyond.</p>
                 <button id="close-about">Close</button>
             </div>
         </div>
@@ -551,6 +654,8 @@
         const aboutLink = document.getElementById('about-link');
         const closeAbout = document.getElementById('close-about');
         const newChatBtn = document.getElementById('new-chat-btn');
+        const resourcesBtn = document.getElementById('resources-btn');
+        const pages = document.querySelectorAll('.page');
 
         let isDarkMode = true;
         let chats = JSON.parse(localStorage.getItem('chats')) || [];
@@ -569,6 +674,7 @@
                 li.addEventListener('click', () => {
                     currentChatId = index;
                     loadChat();
+                    pages.forEach(page => page.classList.toggle('active', page.id === 'chat-page'));
                     sidebar.classList.remove('active');
                 });
                 chatList.appendChild(li);
@@ -582,7 +688,7 @@
                     addMessage(msg.text, msg.type, msg.timestamp);
                 });
             } else {
-                addMessage('Hey there! Ask me anything about crypto or Web3!', 'bot-message', '11:09 PM IST, Wed, Aug 20, 2025');
+                addMessage('Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.', 'bot-message', '11:21 PM IST, Wed, Aug 20, 2025');
             }
         }
 
@@ -657,10 +763,18 @@
             saveChats();
             renderChats();
             loadChat();
+            pages.forEach(page => page.classList.toggle('active', page.id === 'chat-page'));
+            sidebar.classList.remove('active');
+        });
+
+        resourcesBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            pages.forEach(page => page.classList.toggle('active', page.id === 'resources-page'));
             sidebar.classList.remove('active');
         });
 
         sendBtn.addEventListener('click', () => {
+            if (!pages[0].classList.contains('active')) return; // Only allow chat input on chat page
             const message = userInput.value.trim();
             if (!message) return;
             if (currentChatId === null) {
@@ -692,7 +806,7 @@
 
             setTimeout(() => {
                 chatBody.removeChild(thinkingDiv);
-                typeAnswer('This is a demo response from QurixAI. Ask about crypto or Web3 to get started!');
+                typeAnswer('This is a demo response from QurixAI. Try asking about RBSE Class 10 or 12 syllabus, exam tips, or resources!');
             }, 3000);
         });
 
@@ -703,10 +817,11 @@
         });
 
         imageUploadInput.addEventListener('change', (e) => {
+            if (!pages[0].classList.contains('active')) return;
             const file = e.target.files[0];
             if (file) {
                 console.log('Image uploaded:', file.name);
-                addMessage(`Image uploaded: ${file.name}`, 'user-message');
+                addMessage(`Homework image uploaded: ${file.name}`, 'user-message');
             }
         });
 
@@ -727,7 +842,7 @@
                 } else if (action === 'settings') {
                     settingsModal.classList.add('active');
                 } else if (action === 'help') {
-                    alert('Help: Type your question in the input box. Use the sidebar to start a new chat or view old chats.');
+                    alert('Help: Ask questions about RBSE Class 10 or 12 syllabus, exams, or resources. Use the sidebar to start a new chat or access Student Resources.');
                 }
                 dropdownContent.classList.remove('active');
             });
