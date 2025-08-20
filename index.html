@@ -112,7 +112,7 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding-bottom: 150px;
+            padding-bottom: 80px;
         }
         .page {
             display: none;
@@ -471,23 +471,6 @@
         .light .resource-item a:hover, .light .resource-item button:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
-        .footer {
-            position: fixed;
-            bottom: 120px;
-            left: 0;
-            right: 0;
-            padding: 10px;
-            background: rgba(30, 30, 46, 0.9);
-            text-align: center;
-            font-size: 0.8rem;
-            color: #60a5fa;
-            border-top: 1px solid #60a5fa;
-        }
-        .light .footer {
-            background: rgba(243, 244, 246, 0.9);
-            color: #1e1e2e;
-            border-top: 1px solid #1e1e2e;
-        }
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
@@ -517,7 +500,7 @@
                 margin-left: 0;
             }
             .chat-body {
-                max-height: calc(100vh - 230px);
+                max-height: calc(100vh - 160px);
             }
             .settings-content {
                 width: 95%;
@@ -551,7 +534,7 @@
                         <div class="message bot-message">
                             <div class="message-content">
                                 <div class="message-text">Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.</div>
-                                <div class="timestamp">11:34 PM IST, Wed, Aug 20, 2025</div>
+                                <div class="timestamp">11:42 PM IST, Wed, Aug 20, 2025</div>
                             </div>
                         </div>
                     </div>
@@ -597,9 +580,6 @@
                     <button id="send-btn">Send</button>
                 </div>
             </div>
-            <div class="footer">
-                <p>Class 10 Result: May 28, 2025 | Class 12 Result: May 22, 2025 | Passing Marks: Minimum 33% in theory + practical required</p>
-            </div>
         </div>
         <div class="settings-modal" id="settings-modal">
             <div class="settings-content">
@@ -622,7 +602,7 @@
                 </div>
                 <div class="settings-item">
                     <span>RBSE Settings</span>
-                    <button disabled>Coming Soon</button>
+                    <a href="#" id="rbse-settings-link">View</a>
                 </div>
             </div>
         </div>
@@ -635,8 +615,39 @@
                 <button id="close-about">Close</button>
             </div>
         </div>
+        <div class="settings-modal" id="rbse-settings-modal">
+            <div class="settings-content">
+                <h2>RBSE Settings</h2>
+                <p>Class 10 Result: May 28, 2025 | Class 12 Result: May 22, 2025</p>
+                <p>Passing Marks: Minimum 33% in theory + practical required</p>
+                <button id="close-rbse-settings">Close</button>
+            </div>
+        </div>
     </div>
     <script>
+        const questions = [
+            { q: "hello", a: "Hi! Welcome to QurixAI, your RBSE AI Tutor. How can I assist you with your studies today?" },
+            { q: "hi", a: "Hey there! Ready to dive into RBSE Class 10 or 12 studies? Ask away!" },
+            { q: "hello ai", a: "Hello! I'm QurixAI, here to help with RBSE syllabus, exam tips, or resources. What's your question?" },
+            { q: "hello qurixai", a: "Hi! I'm your RBSE AI Tutor. Ask about Class 10 or 12 syllabus, or check out Student Resources!" },
+            { q: "how are you", a: "I'm doing great, thanks for asking! How about you? Ready to tackle some RBSE studies?" },
+            { q: "what is qurixai", a: "QurixAI is an AI-powered tutor for RBSE Class 10 and 12 students, offering instant answers, exam tips, and resources like syllabus PDFs and mock tests." },
+            { q: "good morning", a: "Good morning! Let's start your RBSE study session. What topic do you want to explore?" },
+            { q: "good evening", a: "Good evening! Time for some RBSE prep? Ask me anything about Class 10 or 12!" },
+            { q: "can you help me", a: "Absolutely! I'm here to help with RBSE Class 10 or 12 syllabus, exams, or resources. What's up?" },
+            { q: "study tips", a: "For RBSE exams, create a study schedule, focus on key topics from the syllabus, practice past papers, and take short breaks to stay fresh. Need specific subject tips?" },
+            { q: "class 10 math syllabus", a: "The RBSE Class 10 Math syllabus includes topics like Real Numbers, Polynomials, Linear Equations, Triangles, Trigonometry, and Statistics. Want a detailed breakdown or help with a topic?" },
+            { q: "class 12 physics syllabus", a: "The RBSE Class 12 Physics syllabus covers Electrostatics, Current Electricity, Magnetism, Optics, Modern Physics, and more. Need help with a specific chapter?" },
+            { q: "how to prepare for rbse exams", a: "To prepare for RBSE exams, study the syllabus thoroughly, solve previous year papers, focus on weak areas, and practice time management. Want subject-specific strategies?" },
+            { q: "class 10 science important topics", a: "Key RBSE Class 10 Science topics include Chemical Reactions, Life Processes, Electricity, Light, and Human Eye. Want tips or explanations for any of these?" },
+            { q: "class 12 chemistry practicals", a: "RBSE Class 12 Chemistry practicals involve experiments like titration, salt analysis, and preparation of compounds. Need guidance on any experiment?" },
+            { q: "rbse passing marks", a: "To pass RBSE Class 10 or 12, you need a minimum of 33% in both theory and practical exams for each subject. Check RBSE Settings for result dates!" },
+            { q: "how to check rbse results", a: "Visit https://rajresults.nic.in, enter your roll number, and check your Class 10 or 12 results. Results are expected on May 28, 2025 (Class 10) and May 22, 2025 (Class 12)." },
+            { q: "rbse application form", a: "To fill the RBSE application form, visit https://rajeduboard.rajasthan.gov.in/application-form.htm for guidance. Follow the steps there or ask for details!" },
+            { q: "career options after class 12", a: "After RBSE Class 12, explore careers in engineering, medicine, commerce, arts, or vocational courses. Visit https://cg.rajasthan.gov.in for career guidance." },
+            { q: "scholarships for rbse students", a: "RBSE students can apply for scholarships via https://sje.rajasthan.gov.in/scholarships. Check eligibility and deadlines for schemes like Post-Matric Scholarships." }
+        ];
+
         const chatList = document.getElementById('chat-list');
         const chatBody = document.getElementById('chat-body');
         const userInput = document.getElementById('user-input');
@@ -648,10 +659,13 @@
         const menuIcon = document.querySelector('.menu-icon');
         const settingsModal = document.getElementById('settings-modal');
         const aboutModal = document.getElementById('about-modal');
+        const rbseSettingsModal = document.getElementById('rbse-settings-modal');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const clearChats = document.getElementById('clear-chats');
         const aboutLink = document.getElementById('about-link');
+        const rbseSettingsLink = document.getElementById('rbse-settings-link');
         const closeAbout = document.getElementById('close-about');
+        const closeRbseSettings = document.getElementById('close-rbse-settings');
         const newChatBtn = document.getElementById('new-chat-btn');
         const resourcesBtn = document.getElementById('resources-btn');
         const pages = document.querySelectorAll('.page');
@@ -691,7 +705,7 @@
                     addMessage(msg.text, msg.type, msg.timestamp);
                 });
             } else {
-                addMessage('Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.', 'bot-message', '11:34 PM IST, Wed, Aug 20, 2025');
+                addMessage('Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.', 'bot-message', '11:42 PM IST, Wed, Aug 20, 2025');
             }
         }
 
@@ -777,8 +791,8 @@
         });
 
         sendBtn.addEventListener('click', () => {
-            if (!pages[0].classList.contains('active')) return; // Only allow chat input on chat page
-            const message = userInput.value.trim();
+            if (!pages[0].classList.contains('active')) return;
+            const message = userInput.value.trim().toLowerCase();
             if (!message) return;
             if (currentChatId === null) {
                 chats.push({
@@ -788,7 +802,7 @@
                 currentChatId = chats.length - 1;
                 renderChats();
             }
-            addMessage(message, 'user-message');
+            addMessage(userInput.value, 'user-message');
             userInput.value = '';
 
             const thinkingDiv = document.createElement('div');
@@ -809,7 +823,12 @@
 
             setTimeout(() => {
                 chatBody.removeChild(thinkingDiv);
-                typeAnswer('This is a demo response from QurixAI. Try asking about RBSE Class 10 or 12 syllabus, exam tips, or resources!');
+                const matched = questions.find(q => message.includes(q.q.toLowerCase()));
+                if (matched) {
+                    typeAnswer(matched.a);
+                } else {
+                    typeAnswer('This is a demo response from QurixAI. Try asking about RBSE Class 10 or 12 syllabus, exam tips, or resources!');
+                }
             }, 3000);
         });
 
@@ -872,11 +891,25 @@
             aboutModal.classList.add('active');
         });
 
+        rbseSettingsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsModal.classList.remove('active');
+            rbseSettingsModal.classList.add('active');
+        });
+
         closeAbout.addEventListener('click', () => {
             try {
                 aboutModal.classList.remove('active');
             } catch (e) {
                 console.error('Error closing about modal:', e);
+            }
+        });
+
+        closeRbseSettings.addEventListener('click', () => {
+            try {
+                rbseSettingsModal.classList.remove('active');
+            } catch (e) {
+                console.error('Error closing RBSE settings modal:', e);
             }
         });
 
@@ -892,7 +925,12 @@
             }
         });
 
-        // Initialize
+        rbseSettingsModal.addEventListener('click', (e) => {
+            if (e.target === rbseSettingsModal) {
+                rbseSettingsModal.classList.remove('active');
+            }
+        });
+
         renderChats();
         loadChat();
     </script>
