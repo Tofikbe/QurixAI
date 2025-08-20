@@ -336,7 +336,6 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.7);
             z-index: 1001;
-            display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -552,7 +551,7 @@
                         <div class="message bot-message">
                             <div class="message-content">
                                 <div class="message-text">Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.</div>
-                                <div class="timestamp">11:27 PM IST, Wed, Aug 20, 2025</div>
+                                <div class="timestamp">11:34 PM IST, Wed, Aug 20, 2025</div>
                             </div>
                         </div>
                     </div>
@@ -662,7 +661,11 @@
         let currentChatId = null;
 
         function saveChats() {
-            localStorage.setItem('chats', JSON.stringify(chats));
+            try {
+                localStorage.setItem('chats', JSON.stringify(chats));
+            } catch (e) {
+                console.error('Error saving chats:', e);
+            }
         }
 
         function renderChats() {
@@ -688,7 +691,7 @@
                     addMessage(msg.text, msg.type, msg.timestamp);
                 });
             } else {
-                addMessage('Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.', 'bot-message', '11:27 PM IST, Wed, Aug 20, 2025');
+                addMessage('Welcome to QurixAI, your RBSE AI Tutor! Ask questions about Class 10 or 12 syllabus, or explore Student Resources.', 'bot-message', '11:34 PM IST, Wed, Aug 20, 2025');
             }
         }
 
@@ -870,7 +873,11 @@
         });
 
         closeAbout.addEventListener('click', () => {
-            aboutModal.classList.remove('active');
+            try {
+                aboutModal.classList.remove('active');
+            } catch (e) {
+                console.error('Error closing about modal:', e);
+            }
         });
 
         settingsModal.addEventListener('click', (e) => {
@@ -885,6 +892,7 @@
             }
         });
 
+        // Initialize
         renderChats();
         loadChat();
     </script>
